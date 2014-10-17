@@ -17,8 +17,8 @@ State::State(const State::Board& board) :
 State::~State() {}
 
 const Marker& State::getMarker(const Position& position) const {
-   if (position.x < 0 || position.x >= BOARD_DIMENSION ||
-    position.y < 0 || position.y >= BOARD_DIMENSION) {
+   if (position.row < 0 || position.row >= BOARD_DIMENSION ||
+    position.col < 0 || position.col >= BOARD_DIMENSION) {
       throw State::_positionOutOfBounds;
    }
 
@@ -78,7 +78,7 @@ std::vector< std::tuple< Move, State > > State::getSuccessors(Marker marker) {
 }
 
 unsigned int State::getIndex(const Position& position) const {
-   return position.y * BOARD_DIMENSION + position.x;
+   return position.row * BOARD_DIMENSION + position.col;
 }
 
 Position State::getPosition(unsigned int index) const {
@@ -89,23 +89,23 @@ std::vector< Position > State::calculateLiberties(Marker marker) {
    std::vector< Position > liberties;
 
    bool hash[BOARD_DIMENSION * BOARD_DIMENSION] = {0};
-   for (int x = 0; x < BOARD_DIMENSION; ++x) {
-      for (int y = 0; y < BOARD_DIMENSION; ++y) {
-         unsigned int index = this->getIndex(Position(x, y));
+   for (int row = 0; row < BOARD_DIMENSION; ++row) {
+      for (int col = 0; col < BOARD_DIMENSION; ++col) {
+         unsigned int index = this->getIndex(Position(row, col));
 
          if (this->_board[index] != marker) {
             continue;
          }
 
          std::array< Position, 4 > adjacents = {{
-            Position(x - 1, y),
-            Position(x + 1, y),
-            Position(x, y - 1),
-            Position(x, y + 1),
+            Position(row - 1, col),
+            Position(row, col - 1),
+            Position(row + 1, col),
+            Position(row, col + 1),
          }};
          for (Position adjPos : adjacents) {
-            if (adjPos.x < 0 || adjPos.x >= BOARD_DIMENSION ||
-             adjPos.y < 0 || adjPos.y >= BOARD_DIMENSION) {
+            if (adjPos.row < 0 || adjPos.row >= BOARD_DIMENSION ||
+             adjPos.col < 0 || adjPos.col >= BOARD_DIMENSION) {
                continue;
             }
 

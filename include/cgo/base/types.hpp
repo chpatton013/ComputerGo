@@ -6,11 +6,13 @@ namespace cgo {
 namespace base {
 
 struct Position {
-   Position(int _x, int _y);
+   Position(int r, int c);
    virtual ~Position();
 
-   int x;
-   int y;
+   bool operator==(const Position& rhs) const;
+
+   int row;
+   int col;
 };
 
 enum Marker { none, black, white, first = none, last = white };

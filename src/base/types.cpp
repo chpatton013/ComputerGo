@@ -2,8 +2,12 @@
 
 using namespace cgo::base;
 
-Position::Position(int _x, int _y) :
-   x(_x), y(_y)
+Position::Position(int r, int c) :
+   row(r), col(c)
 {}
 
 /* virtual */ Position::~Position() {}
+
+bool Position::operator==(const Position& rhs) const {
+   return this->row == rhs.row && this->col == rhs.col;
+}
