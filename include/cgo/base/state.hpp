@@ -1,0 +1,45 @@
+#pragma once
+
+#include <array>
+#include <set>
+#include <tuple>
+#include <vector>
+#include <boost/optional/optional.hpp>
+#include <cgo/base/types.hpp>
+
+namespace cgo {
+namespace base {
+
+#ifndef BOARD_DIMENSION
+#define BOARD_DIMENSION 9
+#endif
+
+class State {
+public:
+   typedef std::array< Marker, BOARD_DIMENSION * BOARD_DIMENSION > Board;
+
+   State();
+   State(const State& state);
+   State(const Board& board);
+   ~State();
+
+   const Marker& getMarker(const Position& position) const;
+
+   std::tuple< int, int > getScore() const;
+   std::vector< Position > getLiberties(Marker marker);
+   std::vector< std::tuple< Move, State > > getSuccessors(Marker marker);
+
+   static struct InvalidMarker {} _invalidMarker;
+   static struct PositionOutOfBounds {} _positionOutOfBounds;
+
+private:
+   unsigned int getIndex(const Position& position) const;
+   Position getPosition(unsigned int index) const;
+   std::vector< Position > calculateLiberties(Marker marker);
+
+   const Board _board;
+   boost::optional< std::vector< Position > > _liberties[2];
+};
+
+} // namespace base
+} // namespace cgo
