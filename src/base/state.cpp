@@ -40,19 +40,13 @@ std::vector< Position > State::getLiberties(Marker marker) {
       throw State::_invalidMarker;
    }
 
+   std::vector< Position > liberties;
    if (!this->_liberties[libertyIndex]) {
-      this->_liberties[libertyIndex] = this->calculateLiberties(marker);
+      liberties = this->calculateLiberties(marker);
+      this->_liberties[libertyIndex] = liberties;
    }
 
-   // Just returning this->_liberties[libertyIndex].get() without explicitly
-   // checking the thruthyness of the optional will silently fail by ALWAYS
-   // returning a default (empty) vector.
-   auto libertyOpt = this->_liberties[libertyIndex];
-   if (!libertyOpt) {
-      return std::vector< Position >();
-   } else {
-      return libertyOpt.get();
-   }
+   return liberties;
 }
 
 std::vector< std::tuple< Move, State > > State::getSuccessors(Marker marker) {
@@ -86,9 +80,11 @@ Position State::getPosition(unsigned int index) const {
 }
 
 std::vector< Position > State::calculateLiberties(Marker marker) {
+   std::array< bool, BOARD_DIMENSION * BOARD_DIMENSION > hash;
+   hash.fill(false);
+
    std::vector< Position > liberties;
 
-   bool hash[BOARD_DIMENSION * BOARD_DIMENSION] = {0};
    for (int row = 0; row < BOARD_DIMENSION; ++row) {
       for (int col = 0; col < BOARD_DIMENSION; ++col) {
          unsigned int index = this->getIndex(Position(row, col));
@@ -111,7 +107,7 @@ std::vector< Position > State::calculateLiberties(Marker marker) {
 
             unsigned int adjIndex = this->getIndex(adjPos);
 
-            if (!hash[adjIndex]) {
+            if (hash[adjIndex]) {
                continue;
             }
 
