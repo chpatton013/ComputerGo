@@ -60,7 +60,7 @@ std::vector< Position > State::getLiberties(Marker marker) {
 }
 
 std::vector< std::tuple< Move, State > > State::getSuccessors(Marker marker,
- std::tuple< Move, State > predecessor) {
+ boost::optional< std::tuple< Move, State > > predecessor) const {
    if (marker < first || marker > last) {
       throw State::_invalidMarker;
    }
