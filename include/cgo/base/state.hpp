@@ -27,7 +27,8 @@ public:
 
    std::tuple< int, int > getScore() const;
    std::vector< Position > getLiberties(Marker marker);
-   std::vector< std::tuple< Move, State > > getSuccessors(Marker marker);
+   std::vector< std::tuple< Move, State > > getSuccessors(Marker marker,
+    std::tuple< Move, State > predecessor);
 
    static struct InvalidMarker {} _invalidMarker;
    static struct PositionOutOfBounds {} _positionOutOfBounds;

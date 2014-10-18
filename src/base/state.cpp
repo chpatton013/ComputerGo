@@ -49,7 +49,8 @@ std::vector< Position > State::getLiberties(Marker marker) {
    return liberties;
 }
 
-std::vector< std::tuple< Move, State > > State::getSuccessors(Marker marker) {
+std::vector< std::tuple< Move, State > > State::getSuccessors(Marker marker,
+ std::tuple< Move, State > predecessor) {
    if (marker < first || marker > last) {
       throw State::_invalidMarker;
    }
