@@ -66,18 +66,33 @@ std::vector< std::tuple< Move, State > > State::getSuccessors(Marker marker,
    }
 
    std::vector< std::tuple< Move, State > > successors;
+   for (int row = 0; row < BOARD_DIMENSION; ++row) {
+      for (int col = 0; col < BOARD_DIMENSION; ++col) {
+         Position position(row, col);
+
+         int index = this->getIndex(position);
+         if (this->_board[index] != none) {
+            continue;
+         }
+
+         // if move is illegal
+         //    continue
+
+         Action action = {marker, position};
+
+         Board successorBoard = this->_board;
+
+         // Take the position.
+         successorBoard[index] = marker;
+
+         // And capture enemies.
+         // Unimplemented.
+
+         successors.push_back({action, State(successorBoard)});
+      }
+   }
 
    successors.push_back({Pass(), *this});
-
-   for (Position position : this->getLiberties(marker)) {
-      Action action = {marker, position};
-
-      Board successorBoard = this->_board;
-      successorBoard[this->getIndex(position)] = marker;
-      State successor = State(successorBoard);
-
-      successors.push_back({action, successor});
-   }
 
    return successors;
 }
