@@ -17,10 +17,7 @@ State::State(const State::Board& board) :
 State::~State() {}
 
 const Marker& State::getMarker(const Position& position) const {
-   if (position.row < 0 || position.row >= BOARD_DIMENSION ||
-    position.col < 0 || position.col >= BOARD_DIMENSION) {
-      throw State::_positionOutOfBounds;
-   }
+   State::validatePosition(position);
 
    return this->_board[State::getIndex(position)];
 }
@@ -41,16 +38,12 @@ std::tuple< int, int > State::getScore() const {
 }
 
 std::vector< Position > State::getLiberties(Marker marker) {
-   int libertyIndex;
-   if (marker == black) {
-      libertyIndex = 0;
-   } else if (marker == white) {
-      libertyIndex = 1;
-   } else {
-      throw State::_invalidMarker;
-   }
+   State::validatePlayerMarker(marker);
+
+   int libertyIndex = (marker == black) ? 0 : 1;
 
    std::vector< Position > liberties;
+
    if (!this->_liberties[libertyIndex]) {
       liberties = this->calculateLiberties(marker);
       this->_liberties[libertyIndex] = liberties;
@@ -61,9 +54,7 @@ std::vector< Position > State::getLiberties(Marker marker) {
 
 std::vector< std::tuple< Move, State > > State::getSuccessors(Marker marker,
  boost::optional< std::tuple< Move, State > > predecessor) const {
-   if (marker < first || marker > last) {
-      throw State::_invalidMarker;
-   }
+   State::validatePlayerMarker(marker);
 
    std::vector< std::tuple< Move, State > > successors;
    for (int row = 0; row < BOARD_DIMENSION; ++row) {
@@ -90,7 +81,11 @@ std::vector< std::tuple< Move, State > > State::getSuccessors(Marker marker,
 
 /* static */ State State::applyAction(const State& sourceState, const Action& action) {
    Marker marker = action.marker;
+   State::validatePlayerMarker(marker);
+
    Position position = action.position;
+   State::validatePosition(position);
+
    int index = State::getIndex(position);
 
    Board successorBoard = sourceState._board;
@@ -139,6 +134,26 @@ std::vector< Position > State::calculateLiberties(Marker marker) {
    return liberties;
 }
 
+/* static */ void State::validateMarker(const Marker& marker) {
+   if (marker < first || marker > last) {
+      throw State::_invalidMarker;
+   }
+}
+
+/* static */ void State::validatePlayerMarker(const Marker& marker) {
+   State::validateMarker(marker);
+   if (marker == none) {
+      throw State::_invalidMarker;
+   }
+}
+
+/* static */ void State::validatePosition(const Position& position) {
+   if (position.row < 0 || position.row >= BOARD_DIMENSION ||
+    position.col < 0 || position.col >= BOARD_DIMENSION) {
+      throw State::_invalidPosition;
+   }
+}
+
 /* static */ unsigned int State::getIndex(const Position& position) {
    return position.row * BOARD_DIMENSION + position.col;
 }
@@ -148,6 +163,8 @@ std::vector< Position > State::calculateLiberties(Marker marker) {
 }
 
 /* static */ std::vector< Position > State::getAdjacentPositions(const Position& position) {
+   State::validatePosition(position);
+
    std::vector< Position > adjacents;
 
    int row = position.row;
@@ -173,4 +190,4 @@ std::vector< Position > State::calculateLiberties(Marker marker) {
 }
 
 /* static */ State::InvalidMarker State::_invalidMarker;
-/* static */ State::PositionOutOfBounds State::_positionOutOfBounds;
+/* static */ State::InvalidPosition State::_invalidPosition;

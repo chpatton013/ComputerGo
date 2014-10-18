@@ -31,12 +31,16 @@ public:
     boost::optional< std::tuple< Move, State > > predecessor) const;
 
    static struct InvalidMarker {} _invalidMarker;
-   static struct PositionOutOfBounds {} _positionOutOfBounds;
+   static struct InvalidPosition {} _invalidPosition;
 
    static State applyAction(const State& sourceState, const Action& action);
 
 private:
    std::vector< Position > calculateLiberties(Marker marker);
+
+   static void validateMarker(const Marker& marker);
+   static void validatePlayerMarker(const Marker& marker);
+   static void validatePosition(const Position& position);
 
    static unsigned int getIndex(const Position& position);
    static Position getPosition(unsigned int index);
