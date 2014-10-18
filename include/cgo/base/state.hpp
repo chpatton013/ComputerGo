@@ -4,7 +4,7 @@
 #include <set>
 #include <tuple>
 #include <vector>
-#include <boost/optional/optional.hpp>
+#include <boost/optional.hpp>
 #include <cgo/base/types.hpp>
 
 namespace cgo {

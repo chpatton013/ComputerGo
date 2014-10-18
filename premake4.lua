@@ -4,8 +4,7 @@ language('C++')
 defines({})
 includedirs({
    'include',
-   'external/boost/optional/include',
-   'external/boost/variant/include'
+   'external/boost/libs/**/include',
 })
 buildoptions({
    '--pipe',

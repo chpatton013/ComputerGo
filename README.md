@@ -1,11 +1,12 @@
 # ComputerGo
 
-## Prerequesites
-* You must have `g++` and `premake4` installed.
+#n# Prerequesites
+* You must have `g++`, `git`, and `premake4` installed.
 * `$LD_LIBRARY_PATH` must contain the location of the built libraries.
 
 ## Building
 ```
+git submodule update --init --recursive
 premake4 gmake
 make [debug|profile|release]
 ```
