@@ -94,18 +94,8 @@ std::vector< Position > State::calculateLiberties(Marker marker) {
             continue;
          }
 
-         std::array< Position, 4 > adjacents = {{
-            Position(row - 1, col),
-            Position(row, col - 1),
-            Position(row + 1, col),
-            Position(row, col + 1),
-         }};
-         for (Position adjPos : adjacents) {
-            if (adjPos.row < 0 || adjPos.row >= BOARD_DIMENSION ||
-             adjPos.col < 0 || adjPos.col >= BOARD_DIMENSION) {
-               continue;
-            }
-
+         auto adjacentPositions = State::getAdjacentPositions(Position(row, col));
+         for (Position adjPos : adjacentPositions) {
             unsigned int adjIndex = this->getIndex(adjPos);
 
             if (hash[adjIndex]) {
@@ -123,6 +113,31 @@ std::vector< Position > State::calculateLiberties(Marker marker) {
    }
 
    return liberties;
+}
+
+/* static */ std::vector< Position > State::getAdjacentPositions(const Position& position) {
+   std::vector< Position > adjacents;
+
+   int row = position.row;
+   int col = position.col;
+
+   if (position.row > 0) {
+      adjacents.push_back(Position(row - 1, col));
+   }
+
+   if (position.col > 0) {
+      adjacents.push_back(Position(row, col - 1));
+   }
+
+   if (position.row < BOARD_DIMENSION - 1) {
+      adjacents.push_back(Position(row + 1, col));
+   }
+
+   if (position.col < BOARD_DIMENSION - 1) {
+      adjacents.push_back(Position(row, col + 1));
+   }
+
+   return adjacents;
 }
 
 /* static */ State::InvalidMarker State::_invalidMarker;

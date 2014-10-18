@@ -38,6 +38,8 @@ private:
    Position getPosition(unsigned int index) const;
    std::vector< Position > calculateLiberties(Marker marker);
 
+   static std::vector< Position > getAdjacentPositions(const Position& position);
+
    const Board _board;
    boost::optional< std::vector< Position > > _liberties[2];
 };
