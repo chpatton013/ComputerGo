@@ -22,7 +22,7 @@ const Marker& State::getMarker(const Position& position) const {
       throw State::_positionOutOfBounds;
    }
 
-   return this->_board[this->getIndex(position)];
+   return this->_board[State::getIndex(position)];
 }
 
 std::tuple< int, int > State::getScore() const {
@@ -70,7 +70,7 @@ std::vector< std::tuple< Move, State > > State::getSuccessors(Marker marker,
       for (int col = 0; col < BOARD_DIMENSION; ++col) {
          Position position(row, col);
 
-         int index = this->getIndex(position);
+         int index = State::getIndex(position);
          if (this->_board[index] != none) {
             continue;
          }
@@ -79,16 +79,7 @@ std::vector< std::tuple< Move, State > > State::getSuccessors(Marker marker,
          //    continue
 
          Action action = {marker, position};
-
-         Board successorBoard = this->_board;
-
-         // Take the position.
-         successorBoard[index] = marker;
-
-         // And capture enemies.
-         // Unimplemented.
-
-         successors.push_back({action, State(successorBoard)});
+         successors.push_back({action, State::applyAction(*this, action)});
       }
    }
 
@@ -97,12 +88,20 @@ std::vector< std::tuple< Move, State > > State::getSuccessors(Marker marker,
    return successors;
 }
 
-unsigned int State::getIndex(const Position& position) const {
-   return position.row * BOARD_DIMENSION + position.col;
-}
+/* static */ State State::applyAction(const State& sourceState, const Action& action) {
+   Marker marker = action.marker;
+   Position position = action.position;
+   int index = State::getIndex(position);
 
-Position State::getPosition(unsigned int index) const {
-   return Position(index / BOARD_DIMENSION, index % BOARD_DIMENSION);
+   Board successorBoard = sourceState._board;
+
+   // Take the position.
+   successorBoard[index] = marker;
+
+   // And capture enemies.
+   // Unimplemented.
+
+   return State(successorBoard);
 }
 
 std::vector< Position > State::calculateLiberties(Marker marker) {
@@ -113,7 +112,7 @@ std::vector< Position > State::calculateLiberties(Marker marker) {
 
    for (int row = 0; row < BOARD_DIMENSION; ++row) {
       for (int col = 0; col < BOARD_DIMENSION; ++col) {
-         unsigned int index = this->getIndex(Position(row, col));
+         unsigned int index = State::getIndex(Position(row, col));
 
          if (this->_board[index] != marker) {
             continue;
@@ -121,7 +120,7 @@ std::vector< Position > State::calculateLiberties(Marker marker) {
 
          auto adjacentPositions = State::getAdjacentPositions(Position(row, col));
          for (Position adjPos : adjacentPositions) {
-            unsigned int adjIndex = this->getIndex(adjPos);
+            unsigned int adjIndex = State::getIndex(adjPos);
 
             if (hash[adjIndex]) {
                continue;
@@ -138,6 +137,14 @@ std::vector< Position > State::calculateLiberties(Marker marker) {
    }
 
    return liberties;
+}
+
+/* static */ unsigned int State::getIndex(const Position& position) {
+   return position.row * BOARD_DIMENSION + position.col;
+}
+
+/* static */ Position State::getPosition(unsigned int index) {
+   return Position(index / BOARD_DIMENSION, index % BOARD_DIMENSION);
 }
 
 /* static */ std::vector< Position > State::getAdjacentPositions(const Position& position) {

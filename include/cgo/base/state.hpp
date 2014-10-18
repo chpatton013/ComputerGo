@@ -33,11 +33,13 @@ public:
    static struct InvalidMarker {} _invalidMarker;
    static struct PositionOutOfBounds {} _positionOutOfBounds;
 
+   static State applyAction(const State& sourceState, const Action& action);
+
 private:
-   unsigned int getIndex(const Position& position) const;
-   Position getPosition(unsigned int index) const;
    std::vector< Position > calculateLiberties(Marker marker);
 
+   static unsigned int getIndex(const Position& position);
+   static Position getPosition(unsigned int index);
    static std::vector< Position > getAdjacentPositions(const Position& position);
 
    const Board _board;
