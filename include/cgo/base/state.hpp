@@ -29,6 +29,8 @@ public:
    std::vector< Position > getLiberties(Marker marker);
    std::vector< std::tuple< Move, State > > getSuccessors(Marker marker,
     boost::optional< std::tuple< Move, State > > predecessor) const;
+   bool isActionValid(const Action& action,
+    boost::optional< std::tuple< Move, State > > predecessor) const;
 
    static struct InvalidMarker {} _invalidMarker;
    static struct InvalidPosition {} _invalidPosition;

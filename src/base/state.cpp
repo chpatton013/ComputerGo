@@ -60,23 +60,34 @@ std::vector< std::tuple< Move, State > > State::getSuccessors(Marker marker,
    for (int row = 0; row < BOARD_DIMENSION; ++row) {
       for (int col = 0; col < BOARD_DIMENSION; ++col) {
          Position position(row, col);
-
-         int index = State::getIndex(position);
-         if (this->_board[index] != none) {
-            continue;
-         }
-
-         // if move is illegal
-         //    continue
-
          Action action = {marker, position};
-         successors.push_back({action, State::applyAction(*this, action)});
+
+         if (this->isActionValid(action, predecessor)) {
+            successors.push_back({action, State::applyAction(*this, action)});
+         }
       }
    }
 
    successors.push_back({Pass(), *this});
 
    return successors;
+}
+
+bool State::isActionValid(const Action& action,
+ boost::optional< std::tuple< Move, State > > predecessor) const {
+   Marker marker = action.marker;
+   State::validatePlayerMarker(marker);
+
+   Position position = action.position;
+   State::validatePosition(position);
+
+   int index = State::getIndex(position);
+
+   if (this->_board[index] != none) {
+      return false;
+   }
+
+   return true;
 }
 
 /* static */ State State::applyAction(const State& sourceState, const Action& action) {
