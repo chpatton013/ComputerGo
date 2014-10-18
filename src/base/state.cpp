@@ -25,9 +25,19 @@ const Marker& State::getMarker(const Position& position) const {
    return this->_board[this->getIndex(position)];
 }
 
-// TODO: implement me!
 std::tuple< int, int > State::getScore() const {
-   return {0, 0};
+   // For now we are only counting the number of pieces on the board. Eventually
+   // we will want to add territory control.
+   int whiteScore = 0;
+   int blackScore = 0;
+   for (int ndx = 0; ndx < BOARD_DIMENSION * BOARD_DIMENSION; ++ndx) {
+      if (this->_board[ndx] == white) {
+         ++whiteScore;
+      } else if (this->_board[ndx] == black) {
+         ++blackScore;
+      }
+   }
+   return {whiteScore, blackScore};
 }
 
 std::vector< Position > State::getLiberties(Marker marker) {
