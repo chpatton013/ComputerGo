@@ -23,10 +23,10 @@ const Marker& State::getMarker(const Position& position) const {
 }
 
 std::tuple< int, int > State::getScore() const {
-   // For now we are only counting the number of pieces on the board. Eventually
-   // we will want to add territory control.
    int whiteScore = 0;
    int blackScore = 0;
+
+   // Count number of pieces.
    for (int ndx = 0; ndx < BOARD_DIMENSION * BOARD_DIMENSION; ++ndx) {
       if (this->_board[ndx] == white) {
          ++whiteScore;
@@ -34,6 +34,10 @@ std::tuple< int, int > State::getScore() const {
          ++blackScore;
       }
    }
+
+   // Calculate territory controlled.
+   // Unimplemented.
+
    return {whiteScore, blackScore};
 }
 
@@ -90,7 +94,8 @@ bool State::isActionValid(const Action& action,
    return true;
 }
 
-/* static */ State State::applyAction(const State& sourceState, const Action& action) {
+/* static */ State State::applyAction(const State& sourceState,
+ const Action& action) {
    Marker marker = action.marker;
    State::validatePlayerMarker(marker);
 
@@ -111,8 +116,8 @@ bool State::isActionValid(const Action& action,
 }
 
 std::vector< Position > State::calculateLiberties(Marker marker) {
-   std::array< bool, BOARD_DIMENSION * BOARD_DIMENSION > hash;
-   hash.fill(false);
+   std::array< bool, BOARD_DIMENSION * BOARD_DIMENSION > seen;
+   seen.fill(false);
 
    std::vector< Position > liberties;
 
@@ -124,20 +129,20 @@ std::vector< Position > State::calculateLiberties(Marker marker) {
             continue;
          }
 
-         auto adjacentPositions = State::getAdjacentPositions(Position(row, col));
-         for (Position adjPos : adjacentPositions) {
-            unsigned int adjIndex = State::getIndex(adjPos);
+         for (Position adjacentPosition :
+          State::getAdjacentPositions(Position(row, col))) {
+            unsigned int adjacentIndex = State::getIndex(adjacentPosition);
 
-            if (hash[adjIndex]) {
+            if (seen[adjacentIndex]) {
                continue;
             }
 
-            if (this->_board[adjIndex] != none) {
+            if (this->_board[adjacentIndex] != none) {
                continue;
             }
 
-            hash[adjIndex] = true;
-            liberties.push_back(adjPos);
+            liberties.push_back(adjacentPosition);
+            seen[adjacentIndex] = true;
          }
       }
    }
@@ -173,7 +178,8 @@ std::vector< Position > State::calculateLiberties(Marker marker) {
    return Position(index / BOARD_DIMENSION, index % BOARD_DIMENSION);
 }
 
-/* static */ std::vector< Position > State::getAdjacentPositions(const Position& position) {
+/* static */ std::vector< Position > State::getAdjacentPositions(
+ const Position& position) {
    State::validatePosition(position);
 
    std::vector< Position > adjacents;
