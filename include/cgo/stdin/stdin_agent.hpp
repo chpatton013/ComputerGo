@@ -15,5 +15,5 @@ public:
     const std::tuple< base::Move, base::State >& predecessor);
 };
 
-} // namespace base
+} // namespace stdin
 } // namespace cgo

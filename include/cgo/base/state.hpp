@@ -25,7 +25,8 @@ public:
 
    const Marker& getMarker(const Position& position) const;
 
-   std::tuple< int, int > getScore() const;
+   std::tuple< int, int > getScores() const;
+   int getScore(Marker marker) const;
    std::vector< Position > getLiberties(Marker marker);
    std::vector< std::tuple< Move, State > > getSuccessors(Marker marker,
     boost::optional< std::tuple< Move, State > > predecessor) const;

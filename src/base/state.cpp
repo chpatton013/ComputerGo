@@ -22,7 +22,7 @@ const Marker& State::getMarker(const Position& position) const {
    return this->_board[State::getIndex(position)];
 }
 
-std::tuple< int, int > State::getScore() const {
+std::tuple< int, int > State::getScores() const {
    int whiteScore = 0;
    int blackScore = 0;
 
@@ -39,6 +39,17 @@ std::tuple< int, int > State::getScore() const {
    // Unimplemented.
 
    return {whiteScore, blackScore};
+}
+
+int State::getScore(Marker marker) const {
+   State::validatePlayerMarker(marker);
+
+   auto score = this->getScores();
+   if (marker == white) {
+      return std::get<0>(score);
+   } else {
+      return std::get<1>(score);
+   }
 }
 
 std::vector< Position > State::getLiberties(Marker marker) {
