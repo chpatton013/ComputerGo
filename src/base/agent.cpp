@@ -2,5 +2,8 @@
 
 using namespace cgo::base;
 
-Agent::Agent() {}
+Agent::Agent(Marker marker) :
+   _marker(marker)
+{}
+
 /* virtual */ Agent::~Agent() {}

@@ -8,10 +8,14 @@ namespace base {
 class State;
 
 struct Agent {
-   Agent();
+   Agent(Marker marker);
    virtual ~Agent();
 
-   virtual Move makeMove(State& state) = 0;
+   virtual Move makeMove(State& state,
+    const std::tuple< Move, State >& predecessor) = 0;
+
+protected:
+   Marker _marker;
 };
 
 } // namespace base
