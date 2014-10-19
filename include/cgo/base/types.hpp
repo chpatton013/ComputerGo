@@ -18,6 +18,9 @@ struct Position {
 enum Marker { none, black, white, first = none, last = white };
 
 struct Action {
+   Action(Marker m, Position p);
+   virtual ~Action();
+
    Marker marker;
    Position position;
 };

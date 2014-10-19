@@ -11,3 +11,9 @@ Position::Position(int r, int c) :
 bool Position::operator==(const Position& rhs) const {
    return this->row == rhs.row && this->col == rhs.col;
 }
+
+Action::Action(Marker m, Position p) :
+   marker(m), position(p)
+{}
+
+/* virtual */ Action::~Action() {}
