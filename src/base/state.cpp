@@ -126,6 +126,26 @@ bool State::isActionValid(const Action& action,
    return State(successorBoard);
 }
 
+/* static */ void State::validateMarker(const Marker& marker) {
+   if (marker < first || marker > last) {
+      throw State::_invalidMarker;
+   }
+}
+
+/* static */ void State::validatePlayerMarker(const Marker& marker) {
+   State::validateMarker(marker);
+   if (marker == none) {
+      throw State::_invalidMarker;
+   }
+}
+
+/* static */ void State::validatePosition(const Position& position) {
+   if (position.row < 0 || position.row >= BOARD_DIMENSION ||
+    position.col < 0 || position.col >= BOARD_DIMENSION) {
+      throw State::_invalidPosition;
+   }
+}
+
 std::vector< Position > State::calculateLiberties(Marker marker) {
    std::array< bool, BOARD_DIMENSION * BOARD_DIMENSION > seen;
    seen.fill(false);
@@ -159,26 +179,6 @@ std::vector< Position > State::calculateLiberties(Marker marker) {
    }
 
    return liberties;
-}
-
-/* static */ void State::validateMarker(const Marker& marker) {
-   if (marker < first || marker > last) {
-      throw State::_invalidMarker;
-   }
-}
-
-/* static */ void State::validatePlayerMarker(const Marker& marker) {
-   State::validateMarker(marker);
-   if (marker == none) {
-      throw State::_invalidMarker;
-   }
-}
-
-/* static */ void State::validatePosition(const Position& position) {
-   if (position.row < 0 || position.row >= BOARD_DIMENSION ||
-    position.col < 0 || position.col >= BOARD_DIMENSION) {
-      throw State::_invalidPosition;
-   }
 }
 
 /* static */ unsigned int State::getIndex(const Position& position) {

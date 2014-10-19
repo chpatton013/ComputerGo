@@ -16,6 +16,7 @@ struct Agent {
 
 protected:
    Marker _marker;
+   Marker _opponentMarker;
 };
 
 } // namespace base
