@@ -121,6 +121,27 @@ bool State::isActionValid(const Action& action,
    successorBoard[index] = marker;
 
    // And capture enemies.
+   /* 
+   Search the opposite color first.
+   Put all stones of opposite color of the last move into a queue. (If white just moved, check all black pieces)
+   While the queue is not empty:
+      Get a stone, add it to an array or set.
+      Set a variable 'captured' initally to true.
+      Call recursive helper function checkSurroundings:
+         Get adjacent positions of the stone.
+         For each adjacent position:
+         if same color stone
+            add them to the array and call checkSurroundings again
+         if opposite
+            do nothing
+         if empty space, 
+            captured = false
+      if captured is still true:
+         All pieces in the set/array are captured, update score and remove pieces accordingly
+      Remove all stones in the set/array from the queue, as they have been checked.
+      
+      Do we need to check own stones?
+   */
    // Unimplemented.
 
    return State(successorBoard);
