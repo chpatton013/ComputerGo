@@ -38,6 +38,8 @@ std::tuple< int, int > State::getScores() const {
    // Calculate territory controlled.
    // Unimplemented.
 
+   // Add pieces taken.
+   // Unimplemented.
    return {whiteScore, blackScore};
 }
 
@@ -122,7 +124,7 @@ bool State::isActionValid(const Action& action,
 
    // And capture enemies.
    /* 
-   Search the opposite color first.
+   Search the opposite color
    Put all stones of opposite color of the last move into a queue. (If white just moved, check all black pieces)
    While the queue is not empty:
       Get a stone, add it to an array or set.
@@ -132,7 +134,7 @@ bool State::isActionValid(const Action& action,
          For each adjacent position:
          if same color stone
             add them to the array and call checkSurroundings again
-         if opposite
+         if opposite or edge
             do nothing
          if empty space, 
             captured = false
