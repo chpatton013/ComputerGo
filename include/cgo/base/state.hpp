@@ -25,6 +25,7 @@ public:
 
    const Marker& getMarker(const Position& position) const;
 
+   const Board& getBoard() const;
    std::tuple< int, int > getScores() const;
    int getScore(Marker marker) const;
    std::vector< Position > getLiberties(Marker marker);
@@ -48,6 +49,7 @@ private:
    static unsigned int getIndex(const Position& position);
    static Position getPosition(unsigned int index);
    static std::vector< Position > getAdjacentPositions(const Position& position);
+   static std::vector< Position > getSurroundingPositions(const Position& position);
 
    const Board _board;
    boost::optional< std::vector< Position > > _liberties[2];

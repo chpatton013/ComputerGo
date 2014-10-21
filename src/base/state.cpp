@@ -43,6 +43,8 @@ std::tuple< int, int > State::getScores() const {
    return {whiteScore, blackScore};
 }
 
+const State::Board& State::getBoard() const { return this->_board; }
+
 int State::getScore(Marker marker) const {
    State::validatePlayerMarker(marker);
 
@@ -123,7 +125,7 @@ bool State::isActionValid(const Action& action,
    successorBoard[index] = marker;
 
    // And capture enemies.
-   /* 
+   /*
    Search the opposite color
    Put all stones of opposite color of the last move into a queue. (If white just moved, check all black pieces)
    While the queue is not empty:
@@ -136,12 +138,12 @@ bool State::isActionValid(const Action& action,
             add them to the array and call checkSurroundings again
          if opposite or edge
             do nothing
-         if empty space, 
+         if empty space,
             captured = false
       if captured is still true:
          All pieces in the set/array are captured, update score and remove pieces accordingly
       Remove all stones in the set/array from the queue, as they have been checked.
-      
+
       Do we need to check own stones?
    */
    // Unimplemented.
@@ -221,23 +223,52 @@ std::vector< Position > State::calculateLiberties(Marker marker) {
    int row = position.row;
    int col = position.col;
 
-   if (position.row > 0) {
+   if (row > 0) {
       adjacents.push_back(Position(row - 1, col));
    }
 
-   if (position.col > 0) {
+   if (col > 0) {
       adjacents.push_back(Position(row, col - 1));
    }
 
-   if (position.row < BOARD_DIMENSION - 1) {
+   if (row < BOARD_DIMENSION - 1) {
       adjacents.push_back(Position(row + 1, col));
    }
 
-   if (position.col < BOARD_DIMENSION - 1) {
+   if (col < BOARD_DIMENSION - 1) {
       adjacents.push_back(Position(row, col + 1));
    }
 
    return adjacents;
+}
+
+/* static */ std::vector< Position > State::getSurroundingPositions(
+ const Position& position) {
+   State::validatePosition(position);
+
+   std::vector< Position > surrounding = State::getAdjacentPositions(position);
+
+   int row = position.row;
+   int col = position.col;
+
+   if (row > 0) {
+      if (col > 0) {
+         surrounding.push_back(Position(row - 1, col - 1));
+      }
+      if (col < BOARD_DIMENSION - 1) {
+         surrounding.push_back(Position(row - 1, col + 1));
+      }
+   }
+   if (row < BOARD_DIMENSION - 1) {
+      if (col > 0) {
+         surrounding.push_back(Position(row + 1, col - 1));
+      }
+      if (col < BOARD_DIMENSION - 1) {
+         surrounding.push_back(Position(row + 1, col + 1));
+      }
+   }
+
+   return surrounding;
 }
 
 /* static */ State::InvalidMarker State::_invalidMarker;
