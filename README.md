@@ -1,6 +1,6 @@
 # ComputerGo
 
-#n# Prerequesites
+## Prerequesites
 * You must have `g++`, `git`, and `premake4` installed.
 * `$LD_LIBRARY_PATH` must contain the location of the built libraries.
 
