@@ -6,7 +6,7 @@ State::State() :
    State(Board())
 {}
 
-State::State(const State::State& state) :
+State::State(const State& state) :
    State(state._board)
 {}
 
@@ -40,7 +40,7 @@ std::tuple< int, int > State::getScores() const {
 
    // Add pieces taken.
    // Unimplemented.
-   return {whiteScore, blackScore};
+   return std::make_tuple(whiteScore, blackScore);
 }
 
 const State::Board& State::getBoard() const { return this->_board; }
@@ -82,12 +82,12 @@ std::vector< std::tuple< Move, State > > State::getSuccessors(Marker marker,
          Action action = {marker, position};
 
          if (this->isActionValid(action, predecessor)) {
-            successors.push_back({action, State::applyAction(*this, action)});
+            successors.push_back(std::make_tuple(action, State::applyAction(*this, action)));
          }
       }
    }
 
-   successors.push_back({Pass(), *this});
+   successors.push_back(std::make_tuple(Pass(), *this));
 
    return successors;
 }

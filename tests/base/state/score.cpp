@@ -22,7 +22,7 @@ TEST_CASE("base/state/score/count/empty") {
 
    State state(board);
 
-   std::tuple< int, int > expectedScore = {0, 0};
+   std::tuple< int, int > expectedScore = std::make_tuple(0, 0);
    REQUIRE(state.getScores() == expectedScore);
 }
 
@@ -45,7 +45,7 @@ TEST_CASE("base/state/score/count/white") {
 
    State state(board);
 
-   std::tuple< int, int > expectedScore = {9, 0};
+   std::tuple< int, int > expectedScore = std::make_tuple(9, 0);
    REQUIRE(state.getScores() == expectedScore);
 }
 
@@ -68,7 +68,7 @@ TEST_CASE("base/state/score/count/black") {
 
    State state(board);
 
-   std::tuple< int, int > expectedScore = {0, 9};
+   std::tuple< int, int > expectedScore = std::make_tuple(0, 9);
    REQUIRE(state.getScores() == expectedScore);
 }
 
@@ -91,7 +91,7 @@ TEST_CASE("base/state/score/count/mixed") {
 
    State state(board);
 
-   std::tuple< int, int > expectedScore = {13, 11};
+   std::tuple< int, int > expectedScore = std::make_tuple(13, 11);
    REQUIRE(state.getScores() == expectedScore);
 }
 

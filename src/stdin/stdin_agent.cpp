@@ -3,7 +3,7 @@
 #include <cgo/stdin/stdin_agent.hpp>
 
 using namespace cgo::base;
-using namespace cgo::stdin;
+using namespace cgo::standardin;
 
 StdinAgent::StdinAgent(Marker marker) :
    Agent(marker)
