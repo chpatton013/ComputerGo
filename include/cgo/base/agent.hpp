@@ -1,5 +1,6 @@
 #pragma once
 
+#include <boost/optional.hpp>
 #include <cgo/base/types.hpp>
 
 namespace cgo {
@@ -12,7 +13,7 @@ struct Agent {
    virtual ~Agent();
 
    virtual Move makeMove(State& state,
-    const std::tuple< Move, State >& predecessor) = 0;
+    const boost::optional< std::tuple< Move, State > >& predecessor) = 0;
 
 protected:
    Marker _marker;

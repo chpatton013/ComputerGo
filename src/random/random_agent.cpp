@@ -11,16 +11,21 @@ RandomAgent::RandomAgent(Marker marker) :
 /* virtual */ RandomAgent::~RandomAgent() {}
 
 Move RandomAgent::makeMove(State& state,
- const std::tuple< Move, State >& predecessor) {
-   Move previousMove = std::get<0>(predecessor);
-   Action* previousAction = boost::get< Action >(&previousMove);
-   // Opponent passed last turn.
-   if (previousAction == nullptr) {
-      int myScore = state.getScore(this->_marker);
-      int enemyScore = state.getScore(this->_opponentMarker);
+ const boost::optional< std::tuple< Move, State > >& predecessor) {
+   if (!predecessor) {
+      // first move
+   } else {
+      const std::tuple< Move, State >& predecessorTuple = predecessor.get();
+      const Move& previousMove = std::get<0>(predecessorTuple);
+      const Action* previousAction = boost::get< Action >(&previousMove);
+      // Opponent passed last turn.
+      if (previousAction == nullptr) {
+         int myScore = state.getScore(this->_marker);
+         int enemyScore = state.getScore(this->_opponentMarker);
 
-      if (myScore > enemyScore) {
-         return Pass();
+         if (myScore > enemyScore) {
+            return Pass();
+         }
       }
    }
 

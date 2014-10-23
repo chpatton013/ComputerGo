@@ -12,7 +12,7 @@ StdinAgent::StdinAgent(Marker marker) :
 /* virtual */ StdinAgent::~StdinAgent() {}
 
 Move StdinAgent::makeMove(State& state,
- const std::tuple< Move, State >& predecessor) {
+ const boost::optional< std::tuple< Move, State > >& predecessor) {
    static const int bufferSize = 256;
    char input[bufferSize];
 

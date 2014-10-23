@@ -12,7 +12,7 @@ public:
    virtual ~RandomAgent();
 
    base::Move makeMove(base::State& state,
-    const std::tuple< base::Move, base::State >& predecessor);
+    const boost::optional< std::tuple< base::Move, base::State > >& predecessor);
 };
 
 } // namespace random
