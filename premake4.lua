@@ -3,8 +3,9 @@ language('C++')
 
 defines({})
 includedirs({
-   'include',
    'external/boost/libs/**/include',
+   'external/Catch/single_include',
+   'include',
 })
 buildoptions({
    '--pipe',
@@ -71,7 +72,6 @@ project('cgo_test')
 kind('ConsoleApp')
 targetdir('bin')
 files({'tests/**.cpp', 'tests/**.hpp', 'tests/**.inl'})
-includedirs({'external/Catch/single_include'})
 links({
    'cgo_base',
    -- 'cgo_stdin',

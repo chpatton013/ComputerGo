@@ -4,7 +4,7 @@
 #include <cgo/base/state.hpp>
 
 namespace cgo {
-namespace stdin {
+namespace standardin {
 
 class StdinAgent : public base::Agent {
 public:
@@ -15,5 +15,5 @@ public:
     const std::tuple< base::Move, base::State >& predecessor);
 };
 
-} // namespace stdin
+} // namespace standardin
 } // namespace cgo
