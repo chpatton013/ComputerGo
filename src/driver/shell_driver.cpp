@@ -11,21 +11,28 @@
 using namespace cgo;
 
 static std::tuple< int, int > getPlayerChoices() {
-   int player1Choice, player2Choice;
+   int player1Choice = -1;
+   int player2Choice = -1;
 
-   std::cout << "Select player type for player 1 (white):" << std::endl;
-   std::cout << "   0: human controlled" << std::endl;
-   std::cout << "   1: random AI" << std::endl;
-   std::cout << "-> ";
-   std::cin >> player1Choice;
+   do {
+      std::cout << "Select player type for player 1 (white):" << std::endl;
+      std::cout << "   1: human controlled" << std::endl;
+      std::cout << "   2: random AI" << std::endl;
+      std::cout << "-> ";
+      std::cin >> player1Choice;
+   } while (player1Choice < 1 || player1Choice > 2);
 
-   std::cout << "Select player type for player 2 (black):" << std::endl;
-   std::cout << "   0: human controlled" << std::endl;
-   std::cout << "   1: random AI" << std::endl;
-   std::cout << "-> ";
-   std::cin >> player2Choice;
+   do {
+      std::cout << "Select player type for player 2 (black):" << std::endl;
+      std::cout << "   1: human controlled" << std::endl;
+      std::cout << "   2: random AI" << std::endl;
+      std::cout << "-> ";
+      std::cin >> player2Choice;
+   } while (player2Choice < 1 || player2Choice > 2);
 
-   return std::make_tuple(player1Choice, player2Choice);
+   std::cout << std::endl;
+
+   return std::make_tuple(player1Choice - 1, player2Choice - 1);
 }
 
 static base::Agent* getAgentChoice(base::Marker marker, int choice) {
@@ -43,7 +50,12 @@ static void announceWinner(int turn, const std::tuple< int, int >& scores) {
    int whiteScore = std::get<0>(scores);
    int blackScore = std::get<1>(scores);
 
-   std::cout << "Game over after " << turn << "turns" << std::endl;
+   std::cout << "Game over after " << turn;
+   if (turn == 1) {
+      std::cout << " turn" << std::endl;
+   } else {
+      std::cout << " turns" << std::endl;
+   }
 
    std::cout << "   Player 1 (white): " << whiteScore << std::endl;
    std::cout << "   Player 2 (black): " << blackScore << std::endl;
@@ -76,13 +88,11 @@ int main(int argc, char** argv) {
    }};
 
    do {
-      std::cout << "Turn " << (turn / 2 + 1) << std::endl;
-      state.printBoard();
-
       int playerIndex = turn % 2;
       int opponentIndex = (turn + 1) % 2;
 
-      std::cout << "Player " << (playerIndex + 1) << ":" << std::endl;
+      std::cout << "Turn " << (turn / 2 + 1) << ", Player " << (playerIndex + 1) << std::endl;
+      state.printBoard();
 
       boost::optional< std::tuple< base::Move, base::State > > opponentPredecessor = predecessors[opponentIndex];
       base::Move move = agents[playerIndex]->makeMove(state, opponentPredecessor);
@@ -90,14 +100,18 @@ int main(int argc, char** argv) {
       base::Action* action = boost::get< base::Action >(&move);
       if (action != nullptr) {
          state = base::State::applyAction(state, *action);
+         passes[playerIndex] = false;
+      } else {
+         passes[playerIndex] = true;
       }
 
       opponentPredecessor = std::make_tuple(move, state);
 
       ++turn;
+      std::cout << std::endl;
    } while (!passes[0] || !passes[1]);
 
-   announceWinner(turn, state.getScores());
+   announceWinner(turn / 2, state.getScores());
 
    return 0;
 }
