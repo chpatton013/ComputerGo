@@ -36,6 +36,8 @@ public:
 
    State& operator=(const State& rhs);
 
+   void printBoard() const;
+
    static struct InvalidMarker {} _invalidMarker;
    static struct InvalidPosition {} _invalidPosition;
 

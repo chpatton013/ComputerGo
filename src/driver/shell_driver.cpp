@@ -10,32 +10,6 @@
 
 using namespace cgo;
 
-static void printBoard(base::State state) {
-   std::cout << "  1 2 3 4 5 6 7 8 9\n";
-
-   for (int row = 0; row < BOARD_DIMENSION; ++row) {
-      std::cout << (row + 1) << " ";
-
-      for (int col = 0; col < BOARD_DIMENSION; ++col) {
-         int index = row * BOARD_DIMENSION + col;
-
-         switch (state.getBoard()[index]) {
-         case base::Marker::none:
-            std::cout << "- ";
-            break;
-         case base::Marker::white:
-            std::cout << "W ";
-            break;
-         case base::Marker::black:
-            std::cout << "B ";
-            break;
-         }
-      }
-
-      std::cout << std::endl;
-   }
-}
-
 static std::tuple< int, int > getPlayerChoices() {
    int player1Choice, player2Choice;
 
@@ -102,12 +76,13 @@ int main(int argc, char** argv) {
    }};
 
    do {
-      printBoard(state);
+      std::cout << "Turn " << (turn / 2 + 1) << std::endl;
+      state.printBoard();
 
       int playerIndex = turn % 2;
       int opponentIndex = (turn + 1) % 2;
 
-      std::cout << "Player " << playerIndex << ":" << std::endl;
+      std::cout << "Player " << (playerIndex + 1) << ":" << std::endl;
 
       boost::optional< std::tuple< base::Move, base::State > > opponentPredecessor = predecessors[opponentIndex];
       base::Move move = agents[playerIndex]->makeMove(state, opponentPredecessor);
