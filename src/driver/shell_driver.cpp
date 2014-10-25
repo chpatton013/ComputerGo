@@ -1,77 +1,128 @@
+#include <array>
 #include <iostream>
+#include <tuple>
+#include <boost/optional.hpp>
+#include <cgo/base/types.hpp>
+#include <cgo/base/agent.hpp>
+#include <cgo/base/state.hpp>
+#include <cgo/stdin/stdin_agent.hpp>
+#include <cgo/random/random_agent.hpp>
 
-int printBoard(State state) {
-   std::cout << "  0 1 2 3 4 5 6 7 8\n";
-   for (int ndxOuter = 0; ndxOuter < BOARD_DIMENSION; ++ndxOuter) {
-      std::cout << ndxOuter << " "
-      for (int ndxInner = 0; ndxInner < BOARD_DIMENSION; ndxInner++) {
-         int index = ndxOuter * BOARD_DIMENSION + ndxInner;
-         if (state.getBoard[index] == none) {
-            std::cout << "-";
-         } else if (state.getBoard[index] == black) {
-            std::cout << "B";
-         } else if (state.getBoard[index] == white) {
-            std::cout << "W";
+using namespace cgo;
+
+static void printBoard(base::State state) {
+   std::cout << "  1 2 3 4 5 6 7 8 9\n";
+
+   for (int row = 0; row < BOARD_DIMENSION; ++row) {
+      std::cout << (row + 1) << " ";
+
+      for (int col = 0; col < BOARD_DIMENSION; ++col) {
+         int index = row * BOARD_DIMENSION + col;
+
+         switch (state.getBoard()[index]) {
+         case base::Marker::none:
+            std::cout << "- ";
+            break;
+         case base::Marker::white:
+            std::cout << "W ";
+            break;
+         case base::Marker::black:
+            std::cout << "B ";
+            break;
          }
       }
+
       std::cout << std::endl;
    }
 }
 
-int main() {
-   int player1, player2;
-   Move& move1, move2;
-   Action* action1, action2;
-   State state;
+static std::tuple< int, int > getPlayerChoices() {
+   int player1Choice, player2Choice;
 
-   Agent *agent1, *agent2;
+   std::cout << "Select player type for player 1 (white):" << std::endl;
+   std::cout << "   0: human controlled" << std::endl;
+   std::cout << "   1: random AI" << std::endl;
+   std::cout << "-> ";
+   std::cin >> player1Choice;
 
-   std::cout << "Player 1 is white, Player 2 is black" << std::endl;
-   std::cout << "If you want a player to be human controlled, press 0 for that player" << std::endl;
-   std::cout << "If you want a player to be AI controlled, press 1 for random agent" << std::endl;
-   std::cout << "Input Player 1: ";
-   std::cin >> player1;
-   std::cout << "Input Player 2: ";
-   std::cin >> player2;
+   std::cout << "Select player type for player 2 (black):" << std::endl;
+   std::cout << "   0: human controlled" << std::endl;
+   std::cout << "   1: random AI" << std::endl;
+   std::cout << "-> ";
+   std::cin >> player2Choice;
 
-   if (player1 == 0) {
-      agent1 = new StdinAgent(white);
-   } else {
-      agent1 = new RandomAgent(white);
+   return std::make_tuple(player1Choice, player2Choice);
+}
+
+static base::Agent* getAgentChoice(base::Marker marker, int choice) {
+   switch (choice) {
+   case 0:
+      return new standardin::StdinAgent(marker);
+   case 1:
+      return new random::RandomAgent(marker);
    }
 
-   if (player2 == 0) {
-      agent2 = new StdinAgent(black);
+   return nullptr;
+}
+
+static void announceWinner(int turn, const std::tuple< int, int >& scores) {
+   int whiteScore = std::get<0>(scores);
+   int blackScore = std::get<1>(scores);
+
+   std::cout << "Game over after " << turn << "turns" << std::endl;
+
+   std::cout << "   Player 1 (white): " << whiteScore << std::endl;
+   std::cout << "   Player 2 (black): " << blackScore << std::endl;
+
+   if (whiteScore > blackScore) {
+      std::cout << "Player 1 Wins" << std::endl;
+   } else if (whiteScore < blackScore) {
+      std::cout << "Player 2 Wins" << std::endl;
    } else {
-      agent2 = new RandomAgent(black);
+      std::cout << "Tie Game!" << std::endl;
    }
+}
+
+int main(int argc, char** argv) {
+   std::tuple< int, int > choices = getPlayerChoices();
+
+   std::array< base::Agent*, 2 > agents = {{
+      getAgentChoice(base::Marker::white, std::get<0>(choices)),
+      getAgentChoice(base::Marker::black, std::get<1>(choices)),
+   }};
+
+   base::State state;
+
+   std::array< boost::optional< std::tuple< base::Move, base::State > >, 2 > predecessors;
+
+   int turn = 0;
+   std::array< bool, 2 > passes = {{
+      false,
+      false,
+   }};
 
    do {
       printBoard(state);
-      move1 = agent1.makeMove();
-      action1 = boost::get< Action >(&move1);
-      state = State::applyAction(&state, action1);
 
-      if (action1 != nullptr && action2 != nullptr) {
-         break;
+      int playerIndex = turn % 2;
+      int opponentIndex = (turn + 1) % 2;
+
+      std::cout << "Player " << playerIndex << ":" << std::endl;
+
+      boost::optional< std::tuple< base::Move, base::State > > opponentPredecessor = predecessors[opponentIndex];
+      base::Move move = agents[playerIndex]->makeMove(state, opponentPredecessor);
+
+      base::Action* action = boost::get< base::Action >(&move);
+      if (action != nullptr) {
+         state = base::State::applyAction(state, *action);
       }
 
-      printBoard(state);
-      move2 = agent2.makeMove();
-      action2 = boost::get< Action >(&move2);
-      state = State::applyAction(&state, action2);
-   } while (action1 != nullptr && action2 != nullptr);
+      opponentPredecessor = std::make_tuple(move, state);
 
-   std::tuple<int, int> score = state.getScores();
-   int whiteScore = std::get<0>(score);
-   int blackScore = std::get<1>(score);
-   std::cout << "Player 1 " << whiteScore << std::endl;
-   std::cout << "Player 2 " << blackScore << std::endl;
-   if (whiteScore > blackScore) {
-      std::cout << "Player 1, White Wins" << std::endl;
-   } else if (whiteScore == blackScore) {
-      std::cout << "Tie Game!" << std::endl;
-   } else {
-      std::cout << "Player 2, Black Wins!" << std::endl;
-   }
+      ++turn;
+   } while (!passes[0] || !passes[1]);
+
+   announceWinner(turn, state.getScores());
+
+   return 0;
 }
