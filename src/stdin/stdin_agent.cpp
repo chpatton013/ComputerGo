@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #include <sstream>
 #include <cgo/stdin/stdin_agent.hpp>
 
@@ -13,16 +14,15 @@ StdinAgent::StdinAgent(Marker marker) :
 
 Move StdinAgent::makeMove(State& state,
  const boost::optional< std::tuple< Move, State > >& predecessor) {
-   static const int bufferSize = 256;
-   char input[bufferSize];
-
    Position position(-1, -1);
 
    do {
       std::cout << "Enter a move: <row> <col> or (p)ass: ";
-      std::cin.getline(input, bufferSize);
 
-      std::string move(input);
+      std::string move;
+      do {
+         std::getline(std::cin, move);
+      } while (move.size() == 0);
 
       if (move == "p" || move == "pass") {
          return Pass();
@@ -32,8 +32,8 @@ Move StdinAgent::makeMove(State& state,
       std::stringstream ss(move);
       ss >> row >> col;
 
-      position = Position(row - 1, col -1);
-   } while (state.isActionValid(Action(this->_marker, position), predecessor));
+      position = Position(row - 1, col - 1);
+   } while (!state.isActionValid(Action(this->_marker, position), predecessor));
 
    return Action(this->_marker, position);
 }

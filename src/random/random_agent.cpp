@@ -4,14 +4,14 @@
 using namespace cgo::base;
 using namespace cgo::random;
 
-RandomAgent::RandomAgent(Marker marker) :
+RandomAgent::RandomAgent(base::Marker marker) :
    Agent(marker)
 {}
 
 /* virtual */ RandomAgent::~RandomAgent() {}
 
-Move RandomAgent::makeMove(State& state,
- const boost::optional< std::tuple< Move, State > >& predecessor) {
+Move RandomAgent::makeMove(base::State& state,
+ const boost::optional< std::tuple< base::Move, base::State > >& predecessor) {
    if (!predecessor) {
       // first move
    } else {
