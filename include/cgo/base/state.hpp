@@ -34,6 +34,8 @@ public:
    bool isActionValid(const Action& action,
     boost::optional< std::tuple< Move, State > > predecessor) const;
 
+   State& operator=(const State& rhs);
+
    static struct InvalidMarker {} _invalidMarker;
    static struct InvalidPosition {} _invalidPosition;
 
@@ -51,7 +53,7 @@ private:
    static std::vector< Position > getAdjacentPositions(const Position& position);
    static std::vector< Position > getSurroundingPositions(const Position& position);
 
-   const Board _board;
+   Board _board;
    boost::optional< std::vector< Position > > _liberties[2];
 };
 

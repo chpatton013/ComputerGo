@@ -109,6 +109,11 @@ bool State::isActionValid(const Action& action,
    return true;
 }
 
+State& State::operator=(const State::State& rhs) {
+   this->_board = rhs._board;
+   return *this;
+}
+
 /* static */ State State::applyAction(const State& sourceState,
  const Action& action) {
    Marker marker = action.marker;
