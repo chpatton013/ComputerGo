@@ -37,7 +37,28 @@ std::tuple< int, int > State::getScores() const {
    }
 
    // Calculate territory controlled.
-   // Unimplemented.
+   auto territoryGroups = this->groupTerritory();
+   for (auto territoryGroup : territoryGroups) {
+      int surroundingWhite = 0;
+      int surroundingBlack = 0;
+
+      auto surrounding = State::getSurroundingPositionGroup(this->_board,
+       territoryGroup, none);
+      for (auto position : surrounding) {
+         int index = State::getIndex(position);
+         if (this->_board[index] == white) {
+            ++surroundingWhite;
+         } else {
+            ++surroundingBlack;
+         }
+      }
+
+      if (surroundingWhite > 0 && surroundingBlack == 0) {
+         whiteScore += territoryGroup.size();
+      } else if (surroundingBlack > 0 && surroundingWhite == 0) {
+         blackScore += territoryGroup.size();
+      }
+   }
 
    return std::make_tuple(whiteScore, blackScore);
 }
@@ -225,6 +246,36 @@ std::vector< Position > State::calculateLiberties(Marker marker) {
    return liberties;
 }
 
+std::vector< std::vector< Position > > State::groupTerritory() const {
+   std::array< bool, BOARD_DIMENSION * BOARD_DIMENSION > collected;
+   collected.fill(false);
+
+   for (int ndx = 0; ndx < BOARD_DIMENSION * BOARD_DIMENSION; ++ndx) {
+      if (this->_board[ndx] != none) {
+         collected[ndx] = true;
+      }
+   }
+
+   std::vector< std::vector< Position > > collectedGroups;
+
+   for (int row = 0; row < BOARD_DIMENSION; ++row) {
+      for (int col = 0; col < BOARD_DIMENSION; ++col) {
+         Position position(row, col);
+         int index = State::getIndex(position);
+         if (collected[index]) {
+            continue;
+         }
+
+         std::vector< Position > collection;
+         State::collectPositions(this->_board, none, position, collection,
+          collected);
+         collectedGroups.push_back(collection);
+      }
+   }
+
+   return collectedGroups;
+}
+
 /* static */ unsigned int State::getIndex(const Position& position) {
    return position.row * BOARD_DIMENSION + position.col;
 }
@@ -306,20 +357,7 @@ std::vector< Position > State::calculateLiberties(Marker marker) {
        collectedPositions, collected);
    }
 
-   bool captured = true;
-   for (auto collectedPosition : collectedPositions) {
-      auto adjacentCollectedPositions =
-       State::getAdjacentPositions(collectedPosition);
-      for (auto adjacentPosition : adjacentCollectedPositions) {
-         int adjacentIndex = State::getIndex(adjacentPosition);
-         if (board[adjacentIndex] == none) {
-            captured = false;
-            break;
-         }
-      }
-   }
-
-   if (!captured) {
+   if (!State::isCaptured(board, collectedPositions)) {
       return;
    }
 
@@ -329,8 +367,9 @@ std::vector< Position > State::calculateLiberties(Marker marker) {
    }
 }
 
-/* static */ void State::collectPositions(State::Board& board, Marker marker,
- const Position& position, std::vector< Position >& accumulator,
+/* static */ void State::collectPositions(const State::Board& board,
+ Marker marker, const Position& position,
+ std::vector< Position >& accumulator,
  std::array< bool, BOARD_DIMENSION * BOARD_DIMENSION >& collected) {
    int index = State::getIndex(position);
    if (collected[index] || (board[index] != marker)) {
@@ -345,6 +384,39 @@ std::vector< Position > State::calculateLiberties(Marker marker) {
       State::collectPositions(board, marker, adjacentPosition, accumulator,
        collected);
    }
+}
+
+/* static */ bool State::isCaptured(const State::Board& board,
+ const std::vector< Position > positionGroup) {
+   for (auto position : positionGroup) {
+      auto adjacentPositions = State::getAdjacentPositions(position);
+      for (auto adjacentPosition : adjacentPositions) {
+         int adjacentIndex = State::getIndex(adjacentPosition);
+         if (board[adjacentIndex] == none) {
+            return false;
+         }
+      }
+   }
+
+   return true;
+}
+
+/* static */ std::vector< Position > State::getSurroundingPositionGroup(
+ const State::Board& board, const std::vector< Position > positionGroup,
+ Marker marker) {
+   std::vector< Position > surrounding;
+
+   for (auto position : positionGroup) {
+      auto adjacentPositions = State::getAdjacentPositions(position);
+      for (auto adjacentPosition : adjacentPositions) {
+         int adjacentIndex = State::getIndex(adjacentPosition);
+         if (board[adjacentIndex] != marker) {
+            surrounding.push_back(adjacentPosition);
+         }
+      }
+   }
+
+   return surrounding;
 }
 
 /* static */ State::InvalidMarker State::_invalidMarker;

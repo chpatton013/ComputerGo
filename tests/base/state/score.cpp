@@ -3,6 +3,13 @@
 
 using namespace cgo::base;
 
+void assertScore(const State::Board& board,
+ const std::tuple< int, int > expected) {
+   State state(board);
+   std::tuple< int, int > actual = state.getScores();
+   REQUIRE(actual == expected);
+}
+
 TEST_CASE("base/state/score/count/empty") {
    auto n = none;
    auto W = white;
@@ -20,10 +27,9 @@ TEST_CASE("base/state/score/count/empty") {
       n, n, n, n, n, n, n, n, n,
    }};
 
-   State state(board);
+   std::tuple< int, int > expected = std::make_tuple(0, 0);
 
-   std::tuple< int, int > expectedScore = std::make_tuple(0, 0);
-   REQUIRE(state.getScores() == expectedScore);
+   assertScore(board, expected);
 }
 
 TEST_CASE("base/state/score/count/white") {
@@ -32,7 +38,7 @@ TEST_CASE("base/state/score/count/white") {
    auto B = black;
 
    State::Board board = {{
-      W, n, n, n, n, n, n, n, n,
+      W, n, n, n, n, n, n, n, B,
       W, n, n, n, n, n, n, n, n,
       W, n, n, n, n, n, n, n, n,
       n, n, W, n, n, n, n, n, n,
@@ -43,10 +49,9 @@ TEST_CASE("base/state/score/count/white") {
       n, n, n, n, W, n, n, n, n,
    }};
 
-   State state(board);
+   std::tuple< int, int > expected = std::make_tuple(9, 1);
 
-   std::tuple< int, int > expectedScore = std::make_tuple(9, 0);
-   REQUIRE(state.getScores() == expectedScore);
+   assertScore(board, expected);
 }
 
 TEST_CASE("base/state/score/count/black") {
@@ -55,7 +60,7 @@ TEST_CASE("base/state/score/count/black") {
    auto B = black;
 
    State::Board board = {{
-      B, n, n, n, n, n, n, n, n,
+      B, n, n, n, n, n, n, n, W,
       B, n, n, n, n, n, n, n, n,
       B, n, n, n, n, n, n, n, n,
       n, n, B, n, n, n, n, n, n,
@@ -66,10 +71,9 @@ TEST_CASE("base/state/score/count/black") {
       n, n, n, n, B, n, n, n, n,
    }};
 
-   State state(board);
+   std::tuple< int, int > expected = std::make_tuple(1, 9);
 
-   std::tuple< int, int > expectedScore = std::make_tuple(0, 9);
-   REQUIRE(state.getScores() == expectedScore);
+   assertScore(board, expected);
 }
 
 TEST_CASE("base/state/score/count/mixed") {
@@ -89,17 +93,73 @@ TEST_CASE("base/state/score/count/mixed") {
       n, n, n, n, n, n, W, B, W,
    }};
 
-   State state(board);
+   std::tuple< int, int > expected = std::make_tuple(13, 11);
 
-   std::tuple< int, int > expectedScore = std::make_tuple(13, 11);
-   REQUIRE(state.getScores() == expectedScore);
+   assertScore(board, expected);
 }
 
 TEST_CASE("base/state/score/territory/white") {
+   auto n = none;
+   auto W = white;
+   auto B = black;
+
+   State::Board board = {{
+      n, W, n, n, n, n, W, n, n,
+      W, n, n, n, n, n, W, n, n,
+      n, n, n, n, n, n, W, W, W,
+      n, n, W, n, n, n, n, n, n,
+      n, W, n, W, n, n, n, n, n,
+      n, n, W, n, n, W, W, n, n,
+      W, n, n, n, W, n, n, W, n,
+      n, W, n, n, n, W, W, n, n,
+      n, n, W, n, n, n, n, n, n,
+   }};
+
+   std::tuple< int, int > expected = std::make_tuple(81, 0);
+
+   assertScore(board, expected);
 }
 
 TEST_CASE("base/state/score/territory/black") {
+   auto n = none;
+   auto W = white;
+   auto B = black;
+
+   State::Board board = {{
+      n, B, n, n, n, n, B, n, n,
+      B, n, n, n, n, n, B, n, n,
+      n, n, n, n, n, n, B, B, B,
+      n, n, B, n, n, n, n, n, n,
+      n, B, n, B, n, n, n, n, n,
+      n, n, B, n, n, B, B, n, n,
+      B, n, n, n, B, n, n, B, n,
+      n, B, n, n, n, B, B, n, n,
+      n, n, B, n, n, n, n, n, n,
+   }};
+
+   std::tuple< int, int > expected = std::make_tuple(0, 81);
+
+   assertScore(board, expected);
 }
 
 TEST_CASE("base/state/score/territory/mixed") {
+   auto n = none;
+   auto W = white;
+   auto B = black;
+
+   State::Board board = {{
+      B, n, W, n, W, B, n, n, n,
+      n, W, n, W, n, B, n, n, n,
+      W, n, W, n, n, n, B, n, n,
+      n, W, n, n, n, n, n, B, B,
+      W, n, n, n, n, n, n, n, n,
+      B, B, n, n, n, n, n, W, W,
+      n, n, B, n, n, n, W, B, B,
+      n, W, n, B, n, W, B, n, n,
+      n, n, n, B, n, W, B, n, n,
+   }};
+
+   std::tuple< int, int > expected = std::make_tuple(18, 27);
+
+   assertScore(board, expected);
 }

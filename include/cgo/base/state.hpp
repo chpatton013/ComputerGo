@@ -50,6 +50,7 @@ public:
 
 private:
    std::vector< Position > calculateLiberties(Marker marker);
+   std::vector< std::vector< Position > > groupTerritory() const;
 
    static unsigned int getIndex(const Position& position);
    static Position getPosition(unsigned int index);
@@ -57,9 +58,13 @@ private:
    static std::vector< Position > getSurroundingPositions(const Position& position);
    static void capturePosition(Board& board, Marker marker,
     const Position& position);
-   static void collectPositions(Board& board, Marker marker,
+   static void collectPositions(const Board& board, Marker marker,
     const Position& position, std::vector< Position >& accumulator,
     std::array< bool, BOARD_DIMENSION * BOARD_DIMENSION >& collected);
+   static bool isCaptured(const Board& board,
+    const std::vector< Position > positionGroup);
+   static std::vector< Position > getSurroundingPositionGroup(const Board& board,
+    const std::vector< Position > positionGroup, Marker marker);
 
    Board _board;
    boost::optional< std::vector< Position > > _liberties[2];
