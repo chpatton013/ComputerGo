@@ -179,40 +179,6 @@ TEST_CASE("base/state/capture/black") {
    assertCapture(board, action, expected);
 }
 
-TEST_CASE("base/state/capture/incomplete") {
-   auto n = none;
-   auto W = white;
-   auto B = black;
-
-   State::Board board = {{
-      n, n, W, n, n, n, n, n, n,
-      n, W, B, n, W, n, n, n, n,
-      n, n, W, W, n, n, n, n, n,
-      n, n, n, n, n, n, n, n, n,
-      n, n, n, n, n, n, n, n, n,
-      n, n, n, n, n, n, n, n, n,
-      n, n, n, n, n, n, n, n, n,
-      n, n, n, n, n, n, n, n, n,
-      n, n, n, n, n, n, n, n, n,
-   }};
-
-   Action action(white, Position(0, 3));
-
-   State::Board expected = {{
-      n, n, W, W, n, n, n, n, n,
-      n, W, B, n, W, n, n, n, n,
-      n, n, W, W, n, n, n, n, n,
-      n, n, n, n, n, n, n, n, n,
-      n, n, n, n, n, n, n, n, n,
-      n, n, n, n, n, n, n, n, n,
-      n, n, n, n, n, n, n, n, n,
-      n, n, n, n, n, n, n, n, n,
-      n, n, n, n, n, n, n, n, n,
-   }};
-
-   assertCapture(board, action, expected);
-}
-
 TEST_CASE("base/state/capture/contested") {
    auto n = none;
    auto W = white;
