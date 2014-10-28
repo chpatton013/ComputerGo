@@ -39,8 +39,6 @@ std::tuple< int, int > State::getScores() const {
    // Calculate territory controlled.
    // Unimplemented.
 
-   // Add pieces taken.
-   // Unimplemented.
    return std::make_tuple(whiteScore, blackScore);
 }
 
