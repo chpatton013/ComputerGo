@@ -129,7 +129,7 @@ bool State::isActionValid(const Action& action,
    return true;
 }
 
-State& State::operator=(const State::State& rhs) {
+State& State::operator=(const State& rhs) {
    this->_board = rhs._board;
    return *this;
 }
