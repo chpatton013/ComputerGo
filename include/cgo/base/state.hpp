@@ -36,8 +36,6 @@ public:
 
    State& operator=(const State& rhs);
 
-   void printBoard() const;
-
    static struct InvalidMarker {} _invalidMarker;
    static struct InvalidPosition {} _invalidPosition;
 
@@ -46,6 +44,9 @@ public:
    static void validateMarker(const Marker& marker);
    static void validatePlayerMarker(const Marker& marker);
    static void validatePosition(const Position& position);
+
+   static void printBoard(const State& state);
+   static void printBoard(const State::Board& board);
 
 private:
    std::vector< Position > calculateLiberties(Marker marker);

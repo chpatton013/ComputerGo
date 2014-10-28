@@ -92,7 +92,7 @@ int main(int argc, char** argv) {
       int opponentIndex = (turn + 1) % 2;
 
       std::cout << "Turn " << (turn / 2 + 1) << ", Player " << (playerIndex + 1) << std::endl;
-      state.printBoard();
+      base::State::printBoard(state);
 
       boost::optional< std::tuple< base::Move, base::State > > opponentPredecessor = predecessors[opponentIndex];
       base::Move move = agents[playerIndex]->makeMove(state, opponentPredecessor);

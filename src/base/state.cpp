@@ -115,36 +115,6 @@ State& State::operator=(const State::State& rhs) {
    return *this;
 }
 
-void State::printBoard() const {
-   std::cout << "+---+-------------------+" << std::endl;
-   std::cout << "|   | 1 2 3 4 5 6 7 8 9 |" << std::endl;
-   std::cout << "+---+-------------------+" << std::endl;
-
-   for (int row = 0; row < BOARD_DIMENSION; ++row) {
-      std::cout << "| " << (row + 1) << " | ";
-
-      for (int col = 0; col < BOARD_DIMENSION; ++col) {
-         int index = row * BOARD_DIMENSION + col;
-
-         switch (this->_board[index]) {
-         case none:
-            std::cout << "- ";
-            break;
-         case white:
-            std::cout << "W ";
-            break;
-         case black:
-            std::cout << "B ";
-            break;
-         }
-      }
-
-      std::cout << "|" << std::endl;
-   }
-
-   std::cout << "+---+-------------------+" << std::endl;
-}
-
 /* static */ State State::applyAction(const State& sourceState,
  const Action& action) {
    Marker marker = action.marker;
@@ -205,6 +175,40 @@ void State::printBoard() const {
     position.col < 0 || position.col >= BOARD_DIMENSION) {
       throw State::_invalidPosition;
    }
+}
+
+/* static */ void State::printBoard(const State& state) {
+   State::printBoard(state._board);
+}
+
+/* static */ void State::printBoard(const State::Board& board) {
+   std::cout << "+---+-------------------+" << std::endl;
+   std::cout << "|   | 1 2 3 4 5 6 7 8 9 |" << std::endl;
+   std::cout << "+---+-------------------+" << std::endl;
+
+   for (int row = 0; row < BOARD_DIMENSION; ++row) {
+      std::cout << "| " << (row + 1) << " | ";
+
+      for (int col = 0; col < BOARD_DIMENSION; ++col) {
+         int index = row * BOARD_DIMENSION + col;
+
+         switch (board[index]) {
+         case none:
+            std::cout << "- ";
+            break;
+         case white:
+            std::cout << "W ";
+            break;
+         case black:
+            std::cout << "B ";
+            break;
+         }
+      }
+
+      std::cout << "|" << std::endl;
+   }
+
+   std::cout << "+---+-------------------+" << std::endl;
 }
 
 std::vector< Position > State::calculateLiberties(Marker marker) {
