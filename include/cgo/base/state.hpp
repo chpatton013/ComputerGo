@@ -55,6 +55,11 @@ private:
    static Position getPosition(unsigned int index);
    static std::vector< Position > getAdjacentPositions(const Position& position);
    static std::vector< Position > getSurroundingPositions(const Position& position);
+   static void capturePosition(Board& board, Marker marker,
+    const Position& position);
+   static void collectPositions(Board& board, Marker marker,
+    const Position& position, std::vector< Position >& accumulator,
+    std::array< bool, BOARD_DIMENSION * BOARD_DIMENSION >& collected);
 
    Board _board;
    boost::optional< std::vector< Position > > _liberties[2];
