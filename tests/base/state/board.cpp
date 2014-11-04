@@ -4,9 +4,9 @@
 using namespace cgo::base;
 
 TEST_CASE("base/state/board/homogeneous") {
-   State::Board emptyBoard;
-   State::Board whiteBoard;
-   State::Board blackBoard;
+   Board emptyBoard;
+   Board whiteBoard;
+   Board blackBoard;
 
    emptyBoard.fill(none);
    whiteBoard.fill(white);
@@ -26,7 +26,7 @@ TEST_CASE("base/state/board/homogeneous") {
 }
 
 TEST_CASE("base/state/board/mixed") {
-   State::Board board;
+   Board board;
    board.fill(none);
    for (int ndx = 0; ndx < BOARD_DIMENSION; ++ndx) {
       board[ndx * BOARD_DIMENSION] = white;

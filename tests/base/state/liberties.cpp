@@ -3,10 +3,10 @@
 
 using namespace cgo::base;
 
-void assertLiberties(const State::Board& board, const State::Board& expected) {
+void assertLiberties(const Board& board, const Board& expected) {
    State state(board);
    std::vector< Position > liberties;
-   State::Board actual;
+   Board actual;
    actual.fill(none);
 
    liberties = state.getLiberties(white);
@@ -31,7 +31,7 @@ TEST_CASE("base/state/liberties/empty") {
    auto W = white;
    auto B = black;
 
-   State::Board board = {{
+   Board board = {{
       n, n, n, n, n, n, n, n, n,
       n, n, n, n, n, n, n, n, n,
       n, n, n, n, n, n, n, n, n,
@@ -43,7 +43,7 @@ TEST_CASE("base/state/liberties/empty") {
       n, n, n, n, n, n, n, n, n,
    }};
 
-   State::Board expected = {{
+   Board expected = {{
       n, n, n, n, n, n, n, n, n,
       n, n, n, n, n, n, n, n, n,
       n, n, n, n, n, n, n, n, n,
@@ -63,7 +63,7 @@ TEST_CASE("base/state/liberties/white") {
    auto W = white;
    auto B = black;
 
-   State::Board board = {{
+   Board board = {{
       W, n, n, n, W, W, n, n, W,
       n, n, n, n, W, W, n, n, W,
       n, n, n, n, n, n, n, n, W,
@@ -75,7 +75,7 @@ TEST_CASE("base/state/liberties/white") {
       W, W, W, W, W, W, W, n, n,
    }};
 
-   State::Board expected = {{
+   Board expected = {{
       n, W, n, W, n, n, W, W, n,
       W, n, n, W, n, n, W, W, n,
       n, n, n, n, W, W, n, W, n,
@@ -95,7 +95,7 @@ TEST_CASE("base/state/liberties/black") {
    auto W = white;
    auto B = black;
 
-   State::Board board = {{
+   Board board = {{
       B, n, n, n, B, B, n, n, B,
       n, n, n, n, B, B, n, n, B,
       n, n, n, n, n, n, n, n, B,
@@ -107,7 +107,7 @@ TEST_CASE("base/state/liberties/black") {
       B, B, B, B, B, B, B, n, n,
    }};
 
-   State::Board expected = {{
+   Board expected = {{
       n, B, n, B, n, n, B, B, n,
       B, n, n, B, n, n, B, B, n,
       n, n, n, n, B, B, n, B, n,
@@ -127,7 +127,7 @@ TEST_CASE("base/state/liberties/mixed") {
    auto W = white;
    auto B = black;
 
-   State::Board board = {{
+   Board board = {{
       W, B, n, n, n, n, n, n, n,
       B, n, n, n, n, n, W, B, n,
       n, n, n, n, B, n, n, n, n,
@@ -139,7 +139,7 @@ TEST_CASE("base/state/liberties/mixed") {
       n, B, n, n, n, n, n, W, B,
    }};
 
-   State::Board expected = {{
+   Board expected = {{
       n, n, B, n, n, n, W, B, n,
       n, B, n, n, B, W, n, n, B,
       B, n, n, B, n, B, W, B, n,
@@ -159,7 +159,7 @@ TEST_CASE("base/state/liberties/overlap") {
    auto W = white;
    auto B = black;
 
-   State::Board board = {{
+   Board board = {{
       n, n, n, W, n, B, n, n, n,
       n, n, n, W, n, B, n, n, n,
       n, n, n, W, n, B, n, n, n,

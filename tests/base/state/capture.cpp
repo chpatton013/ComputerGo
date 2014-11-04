@@ -3,9 +3,9 @@
 
 using namespace cgo::base;
 
-void assertCapture(const State::Board& board, const Action& action,
- const State::Board& expected) {
-   State::Board actual = State::applyAction(State(board), action).getBoard();
+void assertCapture(const Board& board, const Action& action,
+ const Board& expected) {
+   Board actual = State::applyAction(State(board), action).getBoard();
    REQUIRE(expected == actual);
 }
 
@@ -14,7 +14,7 @@ TEST_CASE("base/state/capture/empty") {
    auto W = white;
    auto B = black;
 
-   State::Board board = {{
+   Board board = {{
       n, n, n, n, n, n, n, n, n,
       n, n, n, n, n, n, n, n, n,
       n, n, n, n, n, n, n, n, n,
@@ -28,7 +28,7 @@ TEST_CASE("base/state/capture/empty") {
 
    Action action(white, Position(1, 1));
 
-   State::Board expected = {{
+   Board expected = {{
       n, n, n, n, n, n, n, n, n,
       n, W, n, n, n, n, n, n, n,
       n, n, n, n, n, n, n, n, n,
@@ -48,7 +48,7 @@ TEST_CASE("base/state/capture/empty/white") {
    auto W = white;
    auto B = black;
 
-   State::Board board = {{
+   Board board = {{
       n, n, W, n, n, n, n, n, n,
       n, W, n, W, n, n, n, n, n,
       n, n, n, n, n, n, n, n, n,
@@ -62,7 +62,7 @@ TEST_CASE("base/state/capture/empty/white") {
 
    Action action(white, Position(2, 2));
 
-   State::Board expected = {{
+   Board expected = {{
       n, n, W, n, n, n, n, n, n,
       n, W, n, W, n, n, n, n, n,
       n, n, W, n, n, n, n, n, n,
@@ -82,7 +82,7 @@ TEST_CASE("base/state/capture/empty/black") {
    auto W = white;
    auto B = black;
 
-   State::Board board = {{
+   Board board = {{
       n, n, B, n, n, n, n, n, n,
       n, B, n, B, n, n, n, n, n,
       n, n, n, n, n, n, n, n, n,
@@ -96,7 +96,7 @@ TEST_CASE("base/state/capture/empty/black") {
 
    Action action(black, Position(2, 2));
 
-   State::Board expected = {{
+   Board expected = {{
       n, n, B, n, n, n, n, n, n,
       n, B, n, B, n, n, n, n, n,
       n, n, B, n, n, n, n, n, n,
@@ -116,7 +116,7 @@ TEST_CASE("base/state/capture/white") {
    auto W = white;
    auto B = black;
 
-   State::Board board = {{
+   Board board = {{
       n, n, W, n, n, n, n, n, n,
       n, W, B, W, n, n, n, n, n,
       n, n, n, n, n, n, n, n, n,
@@ -130,7 +130,7 @@ TEST_CASE("base/state/capture/white") {
 
    Action action(white, Position(2, 2));
 
-   State::Board expected = {{
+   Board expected = {{
       n, n, W, n, n, n, n, n, n,
       n, W, n, W, n, n, n, n, n,
       n, n, W, n, n, n, n, n, n,
@@ -150,7 +150,7 @@ TEST_CASE("base/state/capture/black") {
    auto W = white;
    auto B = black;
 
-   State::Board board = {{
+   Board board = {{
       n, n, B, n, n, n, n, n, n,
       n, B, W, B, n, n, n, n, n,
       n, n, n, n, n, n, n, n, n,
@@ -164,7 +164,7 @@ TEST_CASE("base/state/capture/black") {
 
    Action action(black, Position(2, 2));
 
-   State::Board expected = {{
+   Board expected = {{
       n, n, B, n, n, n, n, n, n,
       n, B, n, B, n, n, n, n, n,
       n, n, B, n, n, n, n, n, n,
@@ -184,7 +184,7 @@ TEST_CASE("base/state/capture/contested") {
    auto W = white;
    auto B = black;
 
-   State::Board board = {{
+   Board board = {{
       n, n, W, n, n, n, n, n, n,
       n, W, B, n, W, n, n, n, n,
       n, n, W, W, n, n, n, n, n,
@@ -198,7 +198,7 @@ TEST_CASE("base/state/capture/contested") {
 
    Action action(white, Position(0, 3));
 
-   State::Board expected = {{
+   Board expected = {{
       n, n, W, W, n, n, n, n, n,
       n, W, B, n, W, n, n, n, n,
       n, n, W, W, n, n, n, n, n,
@@ -218,7 +218,7 @@ TEST_CASE("base/state/capture/surrounded") {
    auto W = white;
    auto B = black;
 
-   State::Board board = {{
+   Board board = {{
       n, n, W, n, n, n, n, n, n,
       n, W, B, B, W, n, n, n, n,
       n, n, W, W, n, n, n, n, n,
@@ -232,7 +232,7 @@ TEST_CASE("base/state/capture/surrounded") {
 
    Action action(white, Position(0, 3));
 
-   State::Board expected = {{
+   Board expected = {{
       n, n, W, W, n, n, n, n, n,
       n, W, n, n, W, n, n, n, n,
       n, n, W, W, n, n, n, n, n,
@@ -252,7 +252,7 @@ TEST_CASE("base/state/capture/one-eye") {
    auto W = white;
    auto B = black;
 
-   State::Board board = {{
+   Board board = {{
       n, n, B, n, n, n, n, n, n,
       n, B, W, B, n, n, n, n, n,
       B, W, n, W, B, n, n, n, n,
@@ -266,7 +266,7 @@ TEST_CASE("base/state/capture/one-eye") {
 
    Action action(black, Position(2, 2));
 
-   State::Board expected = {{
+   Board expected = {{
       n, n, B, n, n, n, n, n, n,
       n, B, n, B, n, n, n, n, n,
       B, n, B, n, B, n, n, n, n,
@@ -286,7 +286,7 @@ TEST_CASE("base/state/capture/two-eyes") {
    auto W = white;
    auto B = black;
 
-   State::Board board = {{
+   Board board = {{
       n, n, B, n, n, n, n, n, n,
       n, B, W, B, n, n, n, n, n,
       B, W, n, W, B, n, n, n, n,
@@ -301,7 +301,7 @@ TEST_CASE("base/state/capture/two-eyes") {
    Action action1(black, Position(2, 2));
    Action action2(black, Position(3, 3));
 
-   State::Board expected = {{
+   Board expected = {{
       n, n, B, n, n, n, n, n, n,
       n, B, W, B, n, n, n, n, n,
       B, W, n, W, B, n, n, n, n,

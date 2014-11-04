@@ -11,7 +11,7 @@ State::State(const State& state) :
    State(state._board)
 {}
 
-State::State(const State::Board& board) :
+State::State(const Board& board) :
    _board(board)
 {}
 
@@ -63,7 +63,7 @@ std::tuple< int, int > State::getScores() const {
    return std::make_tuple(whiteScore, blackScore);
 }
 
-const State::Board& State::getBoard() const { return this->_board; }
+const Board& State::getBoard() const { return this->_board; }
 
 int State::getScore(Marker marker) const {
    State::validatePlayerMarker(marker);
@@ -91,11 +91,11 @@ std::vector< Position > State::getLiberties(Marker marker) {
    return liberties;
 }
 
-std::vector< std::tuple< Move, State > > State::getSuccessors(Marker marker,
- boost::optional< std::tuple< Move, State > > predecessor) const {
+std::vector< Successor > State::getSuccessors(Marker marker,
+ boost::optional< Predecessor > predecessor) const {
    State::validatePlayerMarker(marker);
 
-   std::vector< std::tuple< Move, State > > successors;
+   std::vector< Successor > successors;
    for (int row = 0; row < BOARD_DIMENSION; ++row) {
       for (int col = 0; col < BOARD_DIMENSION; ++col) {
          Position position(row, col);
@@ -113,7 +113,7 @@ std::vector< std::tuple< Move, State > > State::getSuccessors(Marker marker,
 }
 
 bool State::isActionValid(const Action& action,
- boost::optional< std::tuple< Move, State > > predecessor) const {
+ boost::optional< Predecessor > predecessor) const {
    Marker marker = action.marker;
    State::validatePlayerMarker(marker);
 
@@ -181,7 +181,7 @@ State& State::operator=(const State& rhs) {
    State::printBoard(state._board);
 }
 
-/* static */ void State::printBoard(const State::Board& board) {
+/* static */ void State::printBoard(const Board& board) {
    std::cout << "+---+-------------------+" << std::endl;
    std::cout << "|   | 1 2 3 4 5 6 7 8 9 |" << std::endl;
    std::cout << "+---+-------------------+" << std::endl;
@@ -341,7 +341,7 @@ std::vector< std::vector< Position > > State::groupTerritory() const {
    return surrounding;
 }
 
-/* static */ void State::capturePosition(State::Board& board, Marker marker,
+/* static */ void State::capturePosition(Board& board, Marker marker,
  const Position& position) {
    std::array< bool, BOARD_DIMENSION * BOARD_DIMENSION > collected;
    collected.fill(false);
@@ -367,7 +367,7 @@ std::vector< std::vector< Position > > State::groupTerritory() const {
    }
 }
 
-/* static */ void State::collectPositions(const State::Board& board,
+/* static */ void State::collectPositions(const Board& board,
  Marker marker, const Position& position,
  std::vector< Position >& accumulator,
  std::array< bool, BOARD_DIMENSION * BOARD_DIMENSION >& collected) {
@@ -386,7 +386,7 @@ std::vector< std::vector< Position > > State::groupTerritory() const {
    }
 }
 
-/* static */ bool State::isCaptured(const State::Board& board,
+/* static */ bool State::isCaptured(const Board& board,
  const std::vector< Position > positionGroup) {
    for (auto position : positionGroup) {
       auto adjacentPositions = State::getAdjacentPositions(position);
@@ -402,7 +402,7 @@ std::vector< std::vector< Position > > State::groupTerritory() const {
 }
 
 /* static */ std::vector< Position > State::getSurroundingPositionGroup(
- const State::Board& board, const std::vector< Position > positionGroup,
+ const Board& board, const std::vector< Position > positionGroup,
  Marker marker) {
    std::vector< Position > surrounding;
 

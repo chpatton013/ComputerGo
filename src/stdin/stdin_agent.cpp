@@ -13,7 +13,7 @@ StdinAgent::StdinAgent(Marker marker) :
 /* virtual */ StdinAgent::~StdinAgent() {}
 
 Move StdinAgent::makeMove(State& state,
- const boost::optional< std::tuple< Move, State > >& predecessor) {
+ const boost::optional< Predecessor >& predecessor) {
    Position position(-1, -1);
 
    do {

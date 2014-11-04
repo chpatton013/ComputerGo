@@ -11,11 +11,11 @@ RandomAgent::RandomAgent(base::Marker marker) :
 /* virtual */ RandomAgent::~RandomAgent() {}
 
 Move RandomAgent::makeMove(base::State& state,
- const boost::optional< std::tuple< base::Move, base::State > >& predecessor) {
+ const boost::optional< base::Predecessor >& predecessor) {
    if (!predecessor) {
       // first move
    } else {
-      const std::tuple< Move, State >& predecessorTuple = predecessor.get();
+      const Predecessor& predecessorTuple = predecessor.get();
       const Move& previousMove = std::get<0>(predecessorTuple);
       const Action* previousAction = boost::get< Action >(&previousMove);
       // Opponent passed last turn.

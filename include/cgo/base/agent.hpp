@@ -13,7 +13,7 @@ struct Agent {
    virtual ~Agent();
 
    virtual Move makeMove(State& state,
-    const boost::optional< std::tuple< Move, State > >& predecessor) = 0;
+    const boost::optional< Predecessor >& predecessor) = 0;
 
 protected:
    Marker _marker;

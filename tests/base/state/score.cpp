@@ -3,7 +3,7 @@
 
 using namespace cgo::base;
 
-void assertScore(const State::Board& board,
+void assertScore(const Board& board,
  const std::tuple< int, int > expected) {
    State state(board);
    std::tuple< int, int > actual = state.getScores();
@@ -15,7 +15,7 @@ TEST_CASE("base/state/score/count/empty") {
    auto W = white;
    auto B = black;
 
-   State::Board board = {{
+   Board board = {{
       n, n, n, n, n, n, n, n, n,
       n, n, n, n, n, n, n, n, n,
       n, n, n, n, n, n, n, n, n,
@@ -37,7 +37,7 @@ TEST_CASE("base/state/score/count/white") {
    auto W = white;
    auto B = black;
 
-   State::Board board = {{
+   Board board = {{
       W, n, n, n, n, n, n, n, B,
       W, n, n, n, n, n, n, n, n,
       W, n, n, n, n, n, n, n, n,
@@ -59,7 +59,7 @@ TEST_CASE("base/state/score/count/black") {
    auto W = white;
    auto B = black;
 
-   State::Board board = {{
+   Board board = {{
       B, n, n, n, n, n, n, n, W,
       B, n, n, n, n, n, n, n, n,
       B, n, n, n, n, n, n, n, n,
@@ -81,7 +81,7 @@ TEST_CASE("base/state/score/count/mixed") {
    auto W = white;
    auto B = black;
 
-   State::Board board = {{
+   Board board = {{
       W, n, n, n, n, n, n, n, n,
       W, B, n, n, n, n, n, n, n,
       W, B, W, n, n, n, n, n, n,
@@ -103,7 +103,7 @@ TEST_CASE("base/state/score/territory/white") {
    auto W = white;
    auto B = black;
 
-   State::Board board = {{
+   Board board = {{
       n, W, n, n, n, n, W, n, n,
       W, n, n, n, n, n, W, n, n,
       n, n, n, n, n, n, W, W, W,
@@ -125,7 +125,7 @@ TEST_CASE("base/state/score/territory/black") {
    auto W = white;
    auto B = black;
 
-   State::Board board = {{
+   Board board = {{
       n, B, n, n, n, n, B, n, n,
       B, n, n, n, n, n, B, n, n,
       n, n, n, n, n, n, B, B, B,
@@ -147,7 +147,7 @@ TEST_CASE("base/state/score/territory/mixed") {
    auto W = white;
    auto B = black;
 
-   State::Board board = {{
+   Board board = {{
       B, n, W, n, W, B, n, n, n,
       n, W, n, W, n, B, n, n, n,
       W, n, W, n, n, n, B, n, n,

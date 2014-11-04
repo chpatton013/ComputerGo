@@ -1,6 +1,11 @@
 #pragma once
 
+#include <tuple>
 #include <boost/variant.hpp>
+
+#ifndef BOARD_DIMENSION
+#define BOARD_DIMENSION 9
+#endif
 
 namespace cgo {
 namespace base {
@@ -28,6 +33,13 @@ struct Action {
 struct Pass {};
 
 typedef boost::variant< Pass, Action > Move;
+
+typedef std::array< Marker, BOARD_DIMENSION * BOARD_DIMENSION > Board;
+
+class State;
+
+typedef std::tuple< Move, State > Predecessor;
+typedef std::tuple< Move, State > Successor;
 
 } // namespace base
 } // namespace cgo

@@ -4,9 +4,9 @@
 using namespace cgo::base;
 
 #include <stdio.h>
-void assertSuccessors(const State::Board& board,
- const State::Board& expectedBoard, Marker marker,
- boost::optional< std::tuple< Move, State > > predecessor) {
+void assertSuccessors(const Board& board,
+ const Board& expectedBoard, Marker marker,
+ const boost::optional< Predecessor >& predecessor) {
    std::vector< Position > expected;
    for (int row = 0; row < BOARD_DIMENSION; ++row) {
       for (int col = 0; col < BOARD_DIMENSION; ++col) {
@@ -34,10 +34,10 @@ void assertSuccessors(const State::Board& board,
    REQUIRE(actual == expected);
 }
 
-void assertSuccessors(const State::Board& board,
- const State::Board& expectedBoard, Marker marker) {
+void assertSuccessors(const Board& board,
+ const Board& expectedBoard, Marker marker) {
    assertSuccessors(board, expectedBoard, marker,
-    boost::optional< std::tuple< Move, State > >());
+    boost::optional< Predecessor >());
 }
 
 TEST_CASE("base/state/successors/empty") {
@@ -45,7 +45,7 @@ TEST_CASE("base/state/successors/empty") {
    auto W = white;
    auto B = black;
 
-   State::Board board = {{
+   Board board = {{
       n, n, n, n, n, n, n, n, n,
       n, n, n, n, n, n, n, n, n,
       n, n, n, n, n, n, n, n, n,
@@ -57,7 +57,7 @@ TEST_CASE("base/state/successors/empty") {
       n, n, n, n, n, n, n, n, n,
    }};
 
-   State::Board whiteExpectedBoard = {{
+   Board whiteExpectedBoard = {{
       W, W, W, W, W, W, W, W, W,
       W, W, W, W, W, W, W, W, W,
       W, W, W, W, W, W, W, W, W,
@@ -70,7 +70,7 @@ TEST_CASE("base/state/successors/empty") {
    }};
    assertSuccessors(board, whiteExpectedBoard, white);
 
-   State::Board blackExpectedBoard = {{
+   Board blackExpectedBoard = {{
       B, B, B, B, B, B, B, B, B,
       B, B, B, B, B, B, B, B, B,
       B, B, B, B, B, B, B, B, B,
@@ -89,7 +89,7 @@ TEST_CASE("base/state/successors/white") {
    auto W = white;
    auto B = black;
 
-   State::Board board = {{
+   Board board = {{
       W, W, W, W, W, W, W, W, W,
       W, W, n, n, W, n, n, W, W,
       W, n, W, n, W, n, W, n, W,
@@ -101,7 +101,7 @@ TEST_CASE("base/state/successors/white") {
       W, W, W, W, W, W, W, W, W,
    }};
 
-   State::Board whiteExpectedBoard = {{
+   Board whiteExpectedBoard = {{
       n, n, n, n, n, n, n, n, n,
       n, n, W, W, n, W, W, n, n,
       n, W, n, W, n, W, n, W, n,
@@ -114,7 +114,7 @@ TEST_CASE("base/state/successors/white") {
    }};
    assertSuccessors(board, whiteExpectedBoard, white);
 
-   State::Board blackExpectedBoard = {{
+   Board blackExpectedBoard = {{
       n, n, n, n, n, n, n, n, n,
       n, n, B, B, n, B, B, n, n,
       n, B, n, B, n, B, n, B, n,
@@ -133,7 +133,7 @@ TEST_CASE("base/state/successors/black") {
    auto W = white;
    auto B = black;
 
-   State::Board board = {{
+   Board board = {{
       B, B, B, B, B, B, B, B, B,
       B, B, n, n, B, n, n, B, B,
       B, n, B, n, B, n, B, n, B,
@@ -145,7 +145,7 @@ TEST_CASE("base/state/successors/black") {
       B, B, B, B, B, B, B, B, B,
    }};
 
-   State::Board whiteExpectedBoard = {{
+   Board whiteExpectedBoard = {{
       n, n, n, n, n, n, n, n, n,
       n, n, W, W, n, W, W, n, n,
       n, W, n, W, n, W, n, W, n,
@@ -158,7 +158,7 @@ TEST_CASE("base/state/successors/black") {
    }};
    assertSuccessors(board, whiteExpectedBoard, white);
 
-   State::Board blackExpectedBoard = {{
+   Board blackExpectedBoard = {{
       n, n, n, n, n, n, n, n, n,
       n, n, B, B, n, B, B, n, n,
       n, B, n, B, n, B, n, B, n,
@@ -177,7 +177,7 @@ TEST_CASE("base/state/successors/mixed") {
    auto W = white;
    auto B = black;
 
-   State::Board board = {{
+   Board board = {{
       B, B, B, B, W, B, B, B, B,
       B, W, n, n, B, n, n, W, B,
       B, n, W, n, W, n, W, n, B,
@@ -189,7 +189,7 @@ TEST_CASE("base/state/successors/mixed") {
       B, B, B, B, W, B, B, B, W,
    }};
 
-   State::Board whiteExpectedBoard = {{
+   Board whiteExpectedBoard = {{
       n, n, n, n, n, n, n, n, n,
       n, n, W, W, n, W, W, n, n,
       n, W, n, W, n, W, n, W, n,
@@ -202,7 +202,7 @@ TEST_CASE("base/state/successors/mixed") {
    }};
    assertSuccessors(board, whiteExpectedBoard, white);
 
-   State::Board blackExpectedBoard = {{
+   Board blackExpectedBoard = {{
       n, n, n, n, n, n, n, n, n,
       n, n, B, B, n, B, B, n, n,
       n, B, n, B, n, B, n, B, n,

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <array>
-#include <set>
 #include <tuple>
 #include <vector>
 #include <boost/optional.hpp>
@@ -10,14 +9,8 @@
 namespace cgo {
 namespace base {
 
-#ifndef BOARD_DIMENSION
-#define BOARD_DIMENSION 9
-#endif
-
 class State {
 public:
-   typedef std::array< Marker, BOARD_DIMENSION * BOARD_DIMENSION > Board;
-
    State();
    State(const State& state);
    State(const Board& board);
@@ -29,10 +22,10 @@ public:
    std::tuple< int, int > getScores() const;
    int getScore(Marker marker) const;
    std::vector< Position > getLiberties(Marker marker);
-   std::vector< std::tuple< Move, State > > getSuccessors(Marker marker,
-    boost::optional< std::tuple< Move, State > > predecessor) const;
+   std::vector< Successor > getSuccessors(Marker marker,
+    boost::optional< Predecessor > predecessor) const;
    bool isActionValid(const Action& action,
-    boost::optional< std::tuple< Move, State > > predecessor) const;
+    boost::optional< Predecessor > predecessor) const;
 
    State& operator=(const State& rhs);
 
@@ -46,7 +39,7 @@ public:
    static void validatePosition(const Position& position);
 
    static void printBoard(const State& state);
-   static void printBoard(const State::Board& board);
+   static void printBoard(const Board& board);
 
 private:
    std::vector< Position > calculateLiberties(Marker marker);
