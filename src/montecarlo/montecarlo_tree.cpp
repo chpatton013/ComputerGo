@@ -1,23 +1,22 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <cgo/montecarlo/montecarlo_tree.hpp>
 
-using namespace cgo::base;
-using namespace cgo::standardin;
-
-Node(Position p) {
-   this.position = p;
+Node::Node(int x, int y) {
+   this->x = x;
+   this->y = y;
 }
 
-int update(int val) {
-   this.visits++;
-   this.wins += val;
+int Node::update(int val) {
+   this->visits++;
+   this->wins += val;
    return 0;
 }
 
-double getWinRate() {
-   if (this.visits > 0) {
-      return (double)this.wins / this.visits;
+double Node::getWinRate() {
+   if (this->visits > 0) {
+      return (double)this->wins / this->visits;
    }
    else return 0;
 }

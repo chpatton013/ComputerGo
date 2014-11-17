@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <math.h>
 #include <cgo/montecarlo/montecarlo_agent.hpp>
 
 using namespace cgo::base;
@@ -19,8 +20,8 @@ int MonteCarloAgent::CalculateBest(Position position) {
 }
 
 
-Node MonteCarloAgent::getBestChild(Node& root) {
-   Node* child = root.child;
+Node MonteCarloAgent::getBestChild(Node* root) {
+   Node* child = root->child;
    Node* best_child;
    int best_visits= -1;
    while (child) { // for all children
@@ -30,24 +31,24 @@ Node MonteCarloAgent::getBestChild(Node& root) {
       }
       child = child->sibling;
    }
-   return best_child;
+   return *best_child;
 }
 
 
-Node root;
+Node *root;
 //state -> construct new state and pass the board , use applyAction, state
 
 static const double UCTK = sqrt(1/5);
-Node MonteCarloAgent::UCTSelect(Node& node) {
+Node MonteCarloAgent::UCTSelect(Node* node) {
    Node* res;
-   Node* next = node.child;
+   Node* next = node->child;
 
    double best_uct = 0;
    while (next) {
       double uctvalue;
       if (next->visits > 0) {
-         double winrate = next.getWinRate();
-         double uct = UCTK * sqrt(log(node.visits)/ next.visits);
+         double winrate = next->getWinRate();
+         double uct = UCTK * sqrt(log(node->visits)/ next->visits);
          uctvalue = winrate + uct;
       }
       else {
@@ -61,52 +62,55 @@ Node MonteCarloAgent::UCTSelect(Node& node) {
 
       next = next->sibling;
    }
-   return res;
+   return *res;
 }
 
-void MonteCarloAgent::makeRandomMove() {
+int MonteCarloAgent::makeRandomMove(State& state) {
    int x=0;
    int y=0;
    while (true) {
-      x=rand.nextInt(BOARD_SIZE);
-      y=rand.nextInt(BOARD_SIZE);
-      if (f[x][y]==0 && isOnBoard(x,y)) break;
+   //    x=rand.nextInt(BOARD_SIZE);
+   //    y=rand.nextInt(BOARD_SIZE);
+   //    if (f[x][y]==0 && isOnBoard(x,y)) break;
    }
-   makeMove(x,y);
+   Position position(x, y);
+   Action action(this->_marker, position);
+   State::applyAction(state, action);
    return 0;
 }
 
 
 
-void MonteCarloAgent::createChildren(Node& parent) {
+int MonteCarloAgent::createChildren(Node* parent) {
    Node* last=parent;
    for (int i=0; i<BOARD_SIZE; i++) {
       for (int j=0; j<BOARD_SIZE; j++) {
-         if (isOnBoard(i, j) && f[i][j]==0) {
-            Node node=new Node(i, j);
+         // if (isOnBoard(i, j) && f[i][j]==0) {
+            Node node = Node(i, j);
             if (last==parent)
                last->child=&node;
-            else 
+            else
                last->sibling=&node;
             last=&node;
-         }
+         // }
       }
    }
    return 0;
  }
 
-int MonteCarloAgent::playRandomGame() {
-   int cur_player1=cur_player;
+int MonteCarloAgent::playRandomGame(State& state) {
+   // int cur_player1=cur_player;
    //while (!isGameOver()) {
-   makeRandomMove();
+   makeRandomMove(state);
    //}
    //return getWinner()==curplayer1 ? 1 : 0;
+   return 0;
 }
 
-int MonteCarloAgent::playSimulation(Node& n) {
+int MonteCarloAgent::playSimulation(Node* n, State& state) {
    int randomresult = 0;
-   if (!n->child && n.visits < 10) {
-      randomresult = playRandomGame(); // Change to whatever play random is
+   if (!n->child && n->visits < 10) {
+      randomresult = playRandomGame(state); // Change to whatever play random is
    }
    else {
       if (!n->child) {
@@ -114,15 +118,15 @@ int MonteCarloAgent::playSimulation(Node& n) {
       }
 
       Node next = UCTSelect(n);
-      if (!next) {
+      if (!(&next)) {
          //Error
       }
 
-      int res = playSimulation(next);
+      int res = playSimulation(&next, state);
       randomresult = 1 - res;
    }
 
-   n.update(1-randomresult);
+   n->update(1-randomresult);
    return randomresult;
 }
 
@@ -130,17 +134,18 @@ static const int numSims = 300000;
 Move MonteCarloAgent::makeMove(State& state,
  const boost::optional< std::tuple< Move, State > >& predecessor) {
    int i = 0;
-   Position position(-1, -1);
-   root = Node(position);
+   Node temp = Node(-1, -1);
+   root = &temp;
    State clone = State(state);
    Board boardClone;
    for (i = 0; i < numSims; i++) {
       boardClone = clone.getBoard();
-      playSimulation(root);
+      playSimulation(root, state);
    }
 
    Node n = getBestChild(root);
-   return Action(this->_marker, n.position);
+   Position position(n.x, n.y);
+   return Action(this->_marker, position);
 }
 
    // do {
