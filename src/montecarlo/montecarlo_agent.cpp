@@ -102,11 +102,11 @@ int MonteCarloAgent::playRandomGame() {
 
 int MonteCarloAgent::playSimulation(Node n) {
    int randomresult = 0;
-   if (n.child == null && n.visits < 10) {
+   if (n.child == 0 && n.visits < 10) {
       randomresult = playRandomGame(); // Change to whatever play random is
    }
    else {
-      if (n.child == null) {
+      if (n.child == 0) {
          createChildren(n);
       }
 
