@@ -12,28 +12,34 @@ MonteCarloAgent::MonteCarloAgent(Marker marker) :
 
 /* virtual */ MonteCarloAgent::~MonteCarloAgent() {}
 
+int MonteCarloAgent::CalculateBest(Position position) {
+
+}
+
 Move MonteCarloAgent::makeMove(State& state,
  const boost::optional< std::tuple< Move, State > >& predecessor) {
    Position position(-1, -1);
 
-   do {
-      std::cout << "Enter a move: <row> <col> or (p)ass: ";
+   // do {
+   //    std::cout << "Enter a move: <row> <col> or (p)ass: ";
 
-      std::string move;
-      do {
-         std::getline(std::cin, move);
-      } while (move.size() == 0);
+   //    std::string move;
+   //    do {
+   //       std::getline(std::cin, move);
+   //    } while (move.size() == 0);
 
-      if (move == "p" || move == "pass") {
-         return Pass();
-      }
+   //    if (move == "p" || move == "pass") {
+   //       return Pass();
+   //    }
 
-      int row, col;
-      std::stringstream ss(move);
-      ss >> row >> col;
+   //    int row, col;
+   //    std::stringstream ss(move);
+   //    ss >> row >> col;
 
-      position = Position(row - 1, col - 1);
-   } while (!state.isActionValid(Action(this->_marker, position), predecessor));
+   //    position = Position(row - 1, col - 1);
+   // } while (!state.isActionValid(Action(this->_marker, position), predecessor));
+
+
 
    return Action(this->_marker, position);
 }
