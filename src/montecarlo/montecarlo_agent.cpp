@@ -20,7 +20,7 @@ int MonteCarloAgent::CalculateBest(Position position) {
 
 
 Node MonteCarloAgent::getBestChild(Node root) {
-   Node child = root.child;
+   Node child = *root.child;
    Node best_child;
    int best_visits= -1;
    while (child!=0) { // for all children
@@ -37,19 +37,21 @@ Node MonteCarloAgent::getBestChild(Node root) {
 Node root;
 //state -> construct new state and pass the board , use applyAction, state
 
-static const UCTK = sqrt(1/5);
+static const double UCTK = sqrt(1/5);
 Node MonteCarloAgent::UCTSelect(Node& node) {
-   Node result;
-   Node next = node.child;
+   Node res;
+   Node next = *node.child;
 
    double best_uct = 0;
-   while (next != 0) {
+   while (next != NULL) {
+      double uctvalue;
       if (next.visits > 0) {
          double winrate = next.getWinRate();
          double uct = UCTK * sqrt(log(node.visits)/ next.visits);
+         uctvalue = winrate + uct;
       }
       else {
-         uctvalue = 10000 + 1000 * random();
+         uctvalue = 10000 + 1000 * rand();
       }
 
       if (uctvalue > best_uct) {
@@ -57,7 +59,7 @@ Node MonteCarloAgent::UCTSelect(Node& node) {
          res = next;
       }
 
-      next = next.sibling;
+      next = *next.sibling;
    }
    return res;
 }
@@ -94,19 +96,19 @@ void MonteCarloAgent::createChildren(Node parent) {
 
 int MonteCarloAgent::playRandomGame() {
    int cur_player1=cur_player;
-   while (!isGameOver()) {
-      makeRandomMove();
-   }
-   return getWinner()==curplayer1 ? 1 : 0;
+   //while (!isGameOver()) {
+   makeRandomMove();
+   //}
+   //return getWinner()==curplayer1 ? 1 : 0;
 }
 
 int MonteCarloAgent::playSimulation(Node n) {
    int randomresult = 0;
-   if (n.child == 0 && n.visits < 10) {
+   if (n.child == NULL && n.visits < 10) {
       randomresult = playRandomGame(); // Change to whatever play random is
    }
    else {
-      if (n.child == 0) {
+      if (n.child == NULL) {
          createChildren(n);
       }
 
@@ -123,14 +125,14 @@ int MonteCarloAgent::playSimulation(Node n) {
    return randomresult;
 }
 
-static const numSims = 300000;
+static const int numSims = 300000;
 Move MonteCarloAgent::makeMove(State& state,
  const boost::optional< std::tuple< Move, State > >& predecessor) {
    int i = 0;
    Position position(-1, -1);
-   root = new Node(position);
+   root = Node(position);
    State clone = State(state);
-   Board boardClone; = clone.getBoard();
+   Board boardClone;
    for (i = 0; i < numSims; i++) {
       boardClone = clone.getBoard();
       playSimulation(root);
