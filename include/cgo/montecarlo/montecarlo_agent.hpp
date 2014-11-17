@@ -22,6 +22,9 @@ public:
    MonteCarloAgent(base::Marker marker);
    virtual ~MonteCarloAgent();
 
+   base::Node getBestChild(Node &root);
+   base::Node UCTSelect(Node& node);
+   base::int playSimulation(Node& node); 
    base::Move makeMove(base::State& state,
     const boost::optional< std::tuple< base::Move, base::State > >& predecessor);
 

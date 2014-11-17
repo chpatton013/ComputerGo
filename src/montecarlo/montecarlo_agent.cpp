@@ -18,6 +18,20 @@ int MonteCarloAgent::CalculateBest(Position position) {
 }
 
 
+Node getBestChild(Node root) {
+   Node child = root.child;
+   Node best_child = null;
+   int best_visits= -1;
+   while (child!=0) { // for all children
+      if (child.visits>best_visits) {
+          best_child=child;
+          best_visits=child.visits;
+      }
+      child = child.sibling;
+   }
+   return best_child;
+}
+
 //state -> construct new state and pass the board , use applyAction, state 
 
 static const UCTK = sqrt(1/5);
