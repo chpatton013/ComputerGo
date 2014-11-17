@@ -13,7 +13,11 @@ public:
 
    base::Move makeMove(base::State& state,
     const boost::optional< std::tuple< base::Move, base::State > >& predecessor);
+
+private:
+   CalculateBest(Position position);
 };
+
 
 } // namespace standardin
 } // namespace cgo
