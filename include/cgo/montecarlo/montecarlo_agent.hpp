@@ -8,6 +8,17 @@ namespace standardin {
 
 class MonteCarloAgent : public base::Agent {
 public:
+   class Node  {
+       public:
+         int visits = 0;
+         int wins = 0;
+         Position position;
+         Node child;
+         Node sibling;
+         Node (Position p);
+         update (int val);
+         getWinRate ();
+   };
    MonteCarloAgent(base::Marker marker);
    virtual ~MonteCarloAgent();
 
