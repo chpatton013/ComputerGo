@@ -1,7 +1,6 @@
 #include <iostream>
 #include <string>
 #include <sstream>
-#include <cgo/montecarlo/montecarlo_agent.hpp>
 
 using namespace cgo::base;
 using namespace cgo::standardin;

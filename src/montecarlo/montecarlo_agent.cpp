@@ -2,7 +2,6 @@
 #include <string>
 #include <sstream>
 #include <cgo/montecarlo/montecarlo_agent.hpp>
-#include <cgo/montecarlo/montecarlo_tree.hpp>
 
 using namespace cgo::base;
 using namespace cgo::standardin;
