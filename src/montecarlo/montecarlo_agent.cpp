@@ -16,6 +16,10 @@ MonteCarloAgent::MonteCarloAgent(Marker marker) :
 int MonteCarloAgent::CalculateBest(Position position) {
    return 0;
 }
+
+
+//state -> construct new state and pass the board , use applyAction, state 
+
 static const UCTK = sqrt(1/5);
 Node MonteCarloAgent::UCTSelect(Node& node) {
    Node result = null;
@@ -41,9 +45,45 @@ Node MonteCarloAgent::UCTSelect(Node& node) {
    return res;
 }
 
+int MonteCarloAgent::playSimulation(Node n) {
+   int randomresult = 0;
+   if (n.child == null && n.visits < 10) {
+      randomresult = playRandomGame(); // Change to whatever play random is
+   }
+   else {
+      if (n.child == null) {
+         createChildren(n);
+      }
+
+      Node next = UCTSelect(n);
+      if (next == 0) {
+         
+      }
+
+      int res = playSimulation(next);
+      randomresult = 1 - res;
+   }
+
+   n.update(1-randomresult);
+   return randomresult;
+}
+
+static const numSims = 300000; 
 Move MonteCarloAgent::makeMove(State& state,
  const boost::optional< std::tuple< Move, State > >& predecessor) {
+   int i = 0;
    Position position(-1, -1);
+   root = new Node(position);
+   State clone = State(state);
+   Board boardClone; = clone.getBoard();
+   for (i = 0; i < numSims; i++) {
+      boardClone = clone.getBoard();
+      playSimulation(root);
+   }
+
+   Node n = getBestChild(root);
+   return Action(this->_marker, n.position);
+}
 
    // do {
    //    std::cout << "Enter a move: <row> <col> or (p)ass: ";
@@ -66,5 +106,5 @@ Move MonteCarloAgent::makeMove(State& state,
 
 
 
-   return Action(this->_marker, position);
-}
+  // return Action(this->_marker, position);
+//}
