@@ -7,6 +7,8 @@
 using namespace cgo::base;
 using namespace cgo::standardin;
 
+
+int cur_player=1
 MonteCarloAgent::MonteCarloAgent(Marker marker) :
    Agent(marker)
 {}
@@ -18,7 +20,7 @@ int MonteCarloAgent::CalculateBest(Position position) {
 }
 
 
-Node getBestChild(Node root) {
+Node MonteCarloAgent::getBestChild(Node root) {
    Node child = root.child;
    Node best_child = null;
    int best_visits= -1;
@@ -32,6 +34,8 @@ Node getBestChild(Node root) {
    return best_child;
 }
 
+
+Node root;
 //state -> construct new state and pass the board , use applyAction, state 
 
 static const UCTK = sqrt(1/5);
@@ -57,6 +61,42 @@ Node MonteCarloAgent::UCTSelect(Node& node) {
       next = next.sibling;
    }
    return res;
+}
+
+void MonteCarloAgent::makeRandomMove() {
+   int x=0;
+   int y=0;
+   while (true) {
+      x=rand.nextInt(BOARD_SIZE);
+      y=rand.nextInt(BOARD_SIZE);
+      if (f[x][y]==0 && isOnBoard(x,y)) break;
+   }
+   makeMove(x,y);
+}
+
+
+
+void MonteCarloAgent::createChildren(Node parent) {
+   Node last=parent;
+   for (int i=0; i<BOARD_SIZE; i++) {
+      for (int j=0; j<BOARD_SIZE; j++) {
+         if (isOnBoard(i, j) && f[i][j]==0) {
+            Node node=new Node(i, j);
+            if (last==parent) 
+               last.child=node;
+            else last.sibling=node;
+               last=node;
+         }
+      }
+   }
+ }
+
+int MonteCarloAgent::playRandomGame() {
+   int cur_player1=cur_player;
+   while (!isGameOver()) {
+      makeRandomMove();
+   }
+   return getWinner()==curplayer1 ? 1 : 0;
 }
 
 int MonteCarloAgent::playSimulation(Node n) {

@@ -6,7 +6,9 @@
 namespace cgo {
 namespace standardin {
 
+
 class MonteCarloAgent : public base::Agent {
+const int BOARD_SIZE = 9;	
 public:
    class Node  {
        public:
@@ -22,6 +24,9 @@ public:
    MonteCarloAgent(base::Marker marker);
    virtual ~MonteCarloAgent();
 
+   base::void makeRandomMove();
+   base::int playRandomGame();
+   base::void createChildren(Node& node);
    base::Node getBestChild(Node &root);
    base::Node UCTSelect(Node& node);
    base::int playSimulation(Node& node); 
