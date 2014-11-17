@@ -18,7 +18,7 @@ int update(int val) {
 
 double getWinRate() {
    if (this.visits > 0) {
-      return (double)wins / visits;
+      return (double)this.wins / this.visits;
    }
    else return 0;
 }
