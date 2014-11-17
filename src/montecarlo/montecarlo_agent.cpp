@@ -19,16 +19,16 @@ int MonteCarloAgent::CalculateBest(Position position) {
 }
 
 
-Node MonteCarloAgent::getBestChild(Node root) {
-   Node child = *root.child;
-   Node best_child;
+Node MonteCarloAgent::getBestChild(Node& root) {
+   Node* child = root.child;
+   Node* best_child;
    int best_visits= -1;
-   while (child!=0) { // for all children
-      if (child.visits>best_visits) {
+   while (child) { // for all children
+      if (child->visits>best_visits) {
           best_child=child;
-          best_visits=child.visits;
+          best_visits=child->visits;
       }
-      child = child.sibling;
+      child = child->sibling;
    }
    return best_child;
 }
@@ -39,13 +39,13 @@ Node root;
 
 static const double UCTK = sqrt(1/5);
 Node MonteCarloAgent::UCTSelect(Node& node) {
-   Node res;
-   Node next = *node.child;
+   Node* res;
+   Node* next = node.child;
 
    double best_uct = 0;
-   while (next != NULL) {
+   while (next) {
       double uctvalue;
-      if (next.visits > 0) {
+      if (next->visits > 0) {
          double winrate = next.getWinRate();
          double uct = UCTK * sqrt(log(node.visits)/ next.visits);
          uctvalue = winrate + uct;
@@ -59,7 +59,7 @@ Node MonteCarloAgent::UCTSelect(Node& node) {
          res = next;
       }
 
-      next = *next.sibling;
+      next = next->sibling;
    }
    return res;
 }
@@ -78,16 +78,17 @@ void MonteCarloAgent::makeRandomMove() {
 
 
 
-void MonteCarloAgent::createChildren(Node parent) {
-   Node last=parent;
+void MonteCarloAgent::createChildren(Node& parent) {
+   Node* last=parent;
    for (int i=0; i<BOARD_SIZE; i++) {
       for (int j=0; j<BOARD_SIZE; j++) {
          if (isOnBoard(i, j) && f[i][j]==0) {
             Node node=new Node(i, j);
             if (last==parent)
-               last.child=node;
-            else last.sibling=node;
-               last=node;
+               last->child=&node;
+            else 
+               last->sibling=&node;
+            last=&node;
          }
       }
    }
@@ -102,19 +103,19 @@ int MonteCarloAgent::playRandomGame() {
    //return getWinner()==curplayer1 ? 1 : 0;
 }
 
-int MonteCarloAgent::playSimulation(Node n) {
+int MonteCarloAgent::playSimulation(Node& n) {
    int randomresult = 0;
-   if (n.child == NULL && n.visits < 10) {
+   if (!n->child && n.visits < 10) {
       randomresult = playRandomGame(); // Change to whatever play random is
    }
    else {
-      if (n.child == NULL) {
+      if (!n->child) {
          createChildren(n);
       }
 
       Node next = UCTSelect(n);
-      if (next == 0) {
-
+      if (!next) {
+         //Error
       }
 
       int res = playSimulation(next);
