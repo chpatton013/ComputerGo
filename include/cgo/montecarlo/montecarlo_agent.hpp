@@ -3,6 +3,8 @@
 #include <cgo/base/agent.hpp>
 #include <cgo/base/state.hpp>
 #include <cgo/montecarlo/montecarlo_tree.hpp>
+#include <cgo/driver/driver.hpp>
+#include <cgo/driver/shell_driver.hpp>
 namespace cgo {
 namespace standardin {
 

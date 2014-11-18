@@ -20,6 +20,7 @@ void Driver::play() {
    std::array< boost::optional< base::Predecessor >, 2 > predecessors;
    std::array< bool, 2 > passes;
    passes.fill(false);
+   this->announceGameOver(0);
 
    do {
       int playerIndex = this->_turn % 2;
@@ -45,8 +46,18 @@ void Driver::play() {
       this->announceTurnEnd();
    } while (!passes[0] || !passes[1]);
 
+   this->announceGameOver(1);
    this->announceWinner();
 }
+
+void Driver::announceGameOver(int i) {
+   this->_gameOver = i;
+}
+
+int Driver::checkGameOver() {
+   return this->_gameOver;
+}
+
 
 base::Agent* Driver::choiceToAgent(int choice, base::Marker marker) const {
    switch (choice) {
