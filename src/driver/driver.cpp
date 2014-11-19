@@ -23,7 +23,7 @@ void Driver::play() {
    passes.fill(false);
 
    do {
-      int playerIndex = this->_turn % 2;
+      int playerIndex = (this->_turn % 2);
       int opponentIndex = (this->_turn + 1) % 2;
 
       this->announceTurnStart();

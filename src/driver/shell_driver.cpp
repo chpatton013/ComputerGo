@@ -23,23 +23,27 @@ std::array< base::Agent*, 2 > ShellDriver::getPlayerAgents() const {
       std::cout << "   1: human controlled" << std::endl;
       std::cout << "   2: random AI" << std::endl;
       std::cout << "   3: montecarlo AI" << std::endl;
+      std::cout << "   4: minimax AI" << std::endl;
       std::cout << "-> ";
       std::cin >> whiteChoice;
-   } while (whiteChoice < 1 || whiteChoice > 2);
+   } while (whiteChoice < 1 || whiteChoice > 4);
 
    do {
       std::cout << "Select player type for player 2 (black):" << std::endl;
       std::cout << "   1: human controlled" << std::endl;
       std::cout << "   2: random AI" << std::endl;
       std::cout << "   3: montecarlo AI" << std::endl;
+      std::cout << "   4: minimax AI" << std::endl;
       std::cout << "-> ";
       std::cin >> blackChoice;
-   } while (blackChoice < 1 || blackChoice > 2);
+   } while (blackChoice < 1 || blackChoice > 4);
 
    std::cout << std::endl;
 
-   base::Agent* whiteAgent = this->choiceToAgent(whiteChoice - 1, base::Marker::white);
-   base::Agent* blackAgent = this->choiceToAgent(blackChoice - 1, base::Marker::black);
+   base::Agent* whiteAgent = this->choiceToAgent(whiteChoice - 1,
+    base::Marker::white);
+   base::Agent* blackAgent = this->choiceToAgent(blackChoice - 1,
+    base::Marker::black);
    return {{ whiteAgent, blackAgent }};
 }
 
