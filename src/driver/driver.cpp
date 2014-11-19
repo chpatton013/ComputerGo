@@ -5,6 +5,7 @@
 #include <cgo/random/random_agent.hpp>
 #include <cgo/stdin/stdin_agent.hpp>
 #include <cgo/montecarlo/montecarlo_agent.hpp>
+#include <cgo/minimax/minimax_agent.hpp>
 
 using namespace cgo;
 using namespace cgo::driver;
@@ -57,6 +58,8 @@ base::Agent* Driver::choiceToAgent(int choice, base::Marker marker) const {
       return new random::RandomAgent(marker);
    case 2:
       return new montecarlo::MonteCarloAgent(marker);
+   case 3:
+      return new minimax::MiniMaxAgent(marker);
    }
 
    return nullptr;
