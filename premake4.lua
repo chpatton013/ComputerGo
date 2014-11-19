@@ -45,11 +45,11 @@ targetdir('lib')
 files({'src/random/**.cpp', 'include/cgo/random/**.hpp', 'include/cgo/random/**.inl'})
 links({'cgo_base'})
 
--- project('cgo_minimax')
--- kind('SharedLib')
--- targetdir('lib')
--- files({'src/minimax/**.cpp', 'include/cgo/minimax/**.hpp', 'include/cgo/minimax/**.inl'})
--- links({'cgo_base'})
+project('cgo_minimax')
+kind('SharedLib')
+targetdir('lib')
+files({'src/minimax/**.cpp', 'include/cgo/minimax/**.hpp', 'include/cgo/minimax/**.inl'})
+links({'cgo_base'})
 
 project('cgo_montecarlo')
 kind('SharedLib')
@@ -65,7 +65,7 @@ links({
    'cgo_base',
    'cgo_stdin',
    'cgo_random',
-   -- 'cgo_minimax',
+   'cgo_minimax',
    'cgo_montecarlo'
 })
 
