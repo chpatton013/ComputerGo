@@ -25,7 +25,7 @@ void Driver::play() {
       int playerIndex = this->_turn % 2;
       int opponentIndex = (this->_turn + 1) % 2;
 
-      this->announceTurn();
+      this->announceTurnStart();
 
       auto predecessor = predecessors[opponentIndex];
       auto move = agents[playerIndex]->makeMove(this->_state, predecessor);
@@ -45,7 +45,7 @@ void Driver::play() {
       this->announceTurnEnd();
    } while (!passes[0] || !passes[1]);
 
-   this->announceWinner();
+   this->announceGameEnd();
 }
 
 base::Agent* Driver::choiceToAgent(int choice, base::Marker marker) const {

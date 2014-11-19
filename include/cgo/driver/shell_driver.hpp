@@ -13,9 +13,9 @@ public:
 
 protected:
    std::array< base::Agent*, 2 > getPlayerAgents() const;
-   void announceTurn() const;
+   void announceTurnStart() const;
    void announceTurnEnd() const;
-   void announceWinner() const;
+   void announceGameEnd() const;
 };
 
 } // namespace driver

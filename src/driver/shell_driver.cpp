@@ -41,7 +41,7 @@ std::array< base::Agent*, 2 > ShellDriver::getPlayerAgents() const {
    return {{ whiteAgent, blackAgent }};
 }
 
-void ShellDriver::announceTurn() const {
+void ShellDriver::announceTurnStart() const {
    int globalTurn = this->_turn / 2 + 1;
    int playerIndex = this->_turn % 2 + 1;
 
@@ -53,7 +53,7 @@ void ShellDriver::announceTurnEnd() const {
    std::cout << std::endl;
 }
 
-void ShellDriver::announceWinner() const {
+void ShellDriver::announceGameEnd() const {
    auto scores = this->_state.getScores();
    int whiteScore = std::get<0>(scores);
    int blackScore = std::get<1>(scores);
