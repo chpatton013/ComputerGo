@@ -51,11 +51,11 @@ links({'cgo_base'})
 -- files({'src/minimax/**.cpp', 'include/cgo/minimax/**.hpp', 'include/cgo/minimax/**.inl'})
 -- links({'cgo_base'})
 
--- project('cgo_montecarlo')
--- kind('SharedLib')
--- targetdir('lib')
--- files({'src/montecarlo/**.cpp', 'include/cgo/montecarlo/**.hpp', 'include/cgo/montecarlo/**.inl'})
--- links({'cgo_base'})
+project('cgo_montecarlo')
+kind('SharedLib')
+targetdir('lib')
+files({'src/montecarlo/**.cpp', 'include/cgo/montecarlo/**.hpp', 'include/cgo/montecarlo/**.inl'})
+links({'cgo_base'})
 
 project('cgo_driver')
 kind('ConsoleApp')
@@ -66,7 +66,7 @@ links({
    'cgo_stdin',
    'cgo_random',
    -- 'cgo_minimax',
-   -- 'cgo_montecarlo'
+   'cgo_montecarlo'
 })
 
 project('cgo_test')

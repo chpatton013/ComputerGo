@@ -14,7 +14,7 @@ public:
    virtual ~Driver();
 
    void play();
-
+   
 protected:
    base::Agent* choiceToAgent(int choice, base::Marker marker) const;
    virtual std::array< base::Agent*, 2 > getPlayerAgents() const = 0;
@@ -24,6 +24,7 @@ protected:
 
    base::State _state;
    int _turn;
+   int _gameOver; //1 or 0, reflects game is over when value is 1
 };
 
 } // namespace driver
