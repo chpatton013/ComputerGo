@@ -66,7 +66,7 @@ links({
    'cgo_stdin',
    'cgo_random',
    -- 'cgo_minimax',
-   -- 'cgo_montecarlo'
+   'cgo_montecarlo'
 })
 
 project('cgo_test')

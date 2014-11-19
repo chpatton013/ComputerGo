@@ -22,6 +22,7 @@ std::array< base::Agent*, 2 > ShellDriver::getPlayerAgents() const {
       std::cout << "Select player type for player 1 (white):" << std::endl;
       std::cout << "   1: human controlled" << std::endl;
       std::cout << "   2: random AI" << std::endl;
+      std::cout << "   3: montecarlo AI" << std::endl;
       std::cout << "-> ";
       std::cin >> whiteChoice;
    } while (whiteChoice < 1 || whiteChoice > 2);
@@ -30,6 +31,7 @@ std::array< base::Agent*, 2 > ShellDriver::getPlayerAgents() const {
       std::cout << "Select player type for player 2 (black):" << std::endl;
       std::cout << "   1: human controlled" << std::endl;
       std::cout << "   2: random AI" << std::endl;
+      std::cout << "   3: montecarlo AI" << std::endl;
       std::cout << "-> ";
       std::cin >> blackChoice;
    } while (blackChoice < 1 || blackChoice > 2);

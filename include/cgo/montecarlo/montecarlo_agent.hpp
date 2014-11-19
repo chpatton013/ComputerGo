@@ -3,20 +3,18 @@
 #include <cgo/base/agent.hpp>
 #include <cgo/base/state.hpp>
 #include <cgo/montecarlo/montecarlo_tree.hpp>
-#include <cgo/driver/driver.hpp>
-#include <cgo/driver/shell_driver.hpp>
+
 namespace cgo {
-namespace standardin {
+namespace montecarlo {
 
 
 class MonteCarloAgent : public base::Agent {
 const int BOARD_SIZE = 9;
 public:
-
    MonteCarloAgent(base::Marker marker);
    virtual ~MonteCarloAgent();
-
-   int makeRandomMove(base::State& state);
+   bool checkGameOver(base::State& state, base::Action* action, const boost::optional< std::tuple< base::Move, base::State > >& predecessor);
+   base::Action* makeRandomMove(base::State& state);
    int playRandomGame(base::State& state);
    int createChildren(Node* node);
    Node getBestChild(Node* root);
@@ -30,5 +28,5 @@ private:
 };
 
 
-} // namespace standardin
+} // namespace montecarlo
 } // namespace cgo
