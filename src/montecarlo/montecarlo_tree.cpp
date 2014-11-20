@@ -6,11 +6,17 @@
 Node::Node(int x, int y) {
    this->x = x;
    this->y = y;
+   this->visits = 0;
+   this->wins = 0;
+   this->child = NULL;
+   this->sibling = NULL;
 }
 
 int Node::update(int val) {
    this->visits++;
+   
    this->wins += val;
+   //std::cout << "Update : " << this->x << " " << this->y  << " " << this->visits << " " << this->wins << std::endl;
    return 0;
 }
 
