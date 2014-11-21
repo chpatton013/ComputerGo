@@ -4,8 +4,6 @@
 #include <cgo/base/state.hpp>
 #include <cgo/base/types.hpp>
 
-class Node;
-
 class Node {
 public:
    int visits = 0;
@@ -15,7 +13,5 @@ public:
    Node *child;
    Node *sibling;
    Node (int x, int y);
-   int update (int val);
    double getWinRate ();
-private:
 };

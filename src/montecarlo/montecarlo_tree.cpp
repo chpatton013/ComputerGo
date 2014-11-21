@@ -12,14 +12,6 @@ Node::Node(int x, int y) {
    this->sibling = NULL;
 }
 
-int Node::update(int val) {
-   this->visits++;
-   
-   this->wins += val;
-   //std::cout << "Update : " << this->x << " " << this->y  << " " << this->visits << " " << this->wins << std::endl;
-   return 0;
-}
-
 double Node::getWinRate() {
    if (this->visits > 0) {
       return (double)this->wins / this->visits;
