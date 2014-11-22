@@ -145,10 +145,20 @@ int MonteCarloAgent::playRandomGame(State& state,
    } while (!checkGameOver(tempState, prevAction, pred) && moveCount < 80); //Allow first move
    this->_marker = temp;
    if (std::get<0>(tempState.getScores()) > std::get<1>(tempState.getScores())) {
-      return cur_player == temp_marker ? 1 : 0;
+      if (cur_player == 0) {
+         return cur_player == temp_marker ? 1 : 0;
+      }
+      else {
+         return cur_player == temp_marker ? 0 : 1;
+      }
    }
    else {
-      return cur_player == temp_marker ? 1 : 0;
+      if (cur_player == 1) {
+         return cur_player == temp_marker ? 1 : 0;
+      }
+      else {
+         return cur_player == temp_marker ? 0 : 1;
+      }
    }
 }
 
