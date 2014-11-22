@@ -15,13 +15,13 @@ MonteCarloAgent::MonteCarloAgent(Marker marker) :
 
 /* virtual */ MonteCarloAgent::~MonteCarloAgent() {}
 
-int cur_player = 1;
+Marker cur_player = black;
 boost::optional< std::tuple< Move, State > > predecessorPtr;
 State m_state;
 State tempState;
 Marker temp_marker;
-static const double UCTK = 0.44;
-static const int numSims = 50;
+static const double UCTK = 0.2;
+static const int numSims = 500;
 
 Node* MonteCarloAgent::getBestChild(Node* root) {
    Node* child = root->child;
@@ -40,6 +40,19 @@ Node* MonteCarloAgent::getBestChild(Node* root) {
       }
       child = child->child;
    }
+   // while (child) {
+   //    Node* siblings = child;
+   //    while (siblings) {
+   //       Position position(siblings->x, siblings->y);
+   //       Action action(this->_marker, position);
+   //       if (siblings->visits > best_visit && m_state.isActionValid(action, predecessorPtr)) {
+   //           best_child = siblings;
+   //           best_visit = siblings->visits;
+   //       }
+   //       siblings = siblings->sibling;
+   //    }
+   //    child = child->child;
+   // }
    return best_child;
 }
 
@@ -55,7 +68,7 @@ Node* MonteCarloAgent::UCTSelect(Node* node) {
          uctvalue = winrate + uct;
       }
       else {
-         uctvalue = rand();
+         uctvalue = 10000 + (rand() % 1000);
       }
       if (uctvalue > best_uct) {
          best_uct = uctvalue;
@@ -104,8 +117,8 @@ bool MonteCarloAgent::checkGameOver(State& state, Move move,
 
 Move MonteCarloAgent::makeRandomMove(State& state,
  const boost::optional< std::tuple< base::Move, base::State > >& predecessor) {
-   int x=0;
-   int y=0;
+   int x = 0;
+   int y = 0;
    while (true) {
       x = rand() % BOARD_SIZE;
       y = rand() % BOARD_SIZE;
@@ -132,20 +145,18 @@ Move MonteCarloAgent::makeRandomMove(State& state,
 int MonteCarloAgent::playRandomGame(State& state,
  const boost::optional< std::tuple< base::Move, base::State > >& predecessor) {
    Move prevAction;
-   Marker temp = this->_marker;
    Predecessor pred = predecessor.get();
-   State clone = State(state);
+   tempState = State(state);
    int moveCount = 0;
    do {
-      prevAction = makeRandomMove(clone, pred);
-      cur_player == 0 ? cur_player = 1 : cur_player = 0;
-      this->_marker = (this->_marker == white) ? black : white; // switch players
-      pred = std::make_tuple(prevAction, clone);
+      prevAction = makeRandomMove(tempState, pred);
+      cur_player == white ? cur_player = black : cur_player = white;
+      this->_marker == white ? this->_marker = black : this->_marker = white; // switch players
+      pred = std::make_tuple(prevAction, tempState);
       moveCount++;
    } while (!checkGameOver(tempState, prevAction, pred) && moveCount < 80); //Allow first move
-   this->_marker = temp;
    if (std::get<0>(tempState.getScores()) > std::get<1>(tempState.getScores())) {
-      if (cur_player == 0) {
+      if (cur_player == white) {
          return cur_player == temp_marker ? 1 : 0;
       }
       else {
@@ -153,7 +164,7 @@ int MonteCarloAgent::playRandomGame(State& state,
       }
    }
    else {
-      if (cur_player == 1) {
+      if (cur_player == black) {
          return cur_player == temp_marker ? 1 : 0;
       }
       else {
@@ -170,14 +181,15 @@ int MonteCarloAgent::playSimulation(Node* n, State& state,
    }
    else {
       if (!n->child) {
-         createChildren(n, tempState, predecessor);
+         createChildren(n, state, predecessor);
       }
       Node *next = UCTSelect(n);
 
       Position position(next->x, next->y);
       Action action(this->_marker, position);
-      tempState = State::applyAction(tempState, action);
-      this->_marker = (this->_marker == white) ? black : white;
+      tempState = State::applyAction(state, action);
+      this->_marker == white ? this->_marker = black : this->_marker = white;
+      cur_player == white ? cur_player = black : cur_player = white;
       State clone = State(tempState);
       Predecessor pred = std::make_tuple(action, clone);
       randomresult = playSimulation(next, clone, pred);
