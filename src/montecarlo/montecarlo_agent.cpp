@@ -20,14 +20,27 @@ boost::optional< std::tuple< Move, State > > predecessorPtr;
 State m_state;
 State tempState;
 Marker temp_marker;
-static const double UCTK = 0.2;
-static const int numSims = 500;
+static const double UCTK = 0.35;
+static const int numSims = 1000;
 
 Node* MonteCarloAgent::getBestChild(Node* root) {
    Node* child = root->child;
    Node* best_child = NULL;
    double best_win = -1;
-   while (child) {
+   // while (child) {
+   //    Node* siblings = child;
+   //    while (siblings) {
+   //       Position position(siblings->x, siblings->y);
+   //       Action action(this->_marker, position);
+   //       if (siblings->wins > best_win && m_state.isActionValid(action, predecessorPtr)) {
+   //           best_child = siblings;
+   //           best_win = siblings->wins;
+   //       }
+   //       siblings = siblings->sibling;
+   //    }
+   //    child = child->child;
+   // }
+   // while (child) {
       Node* siblings = child;
       while (siblings) {
          Position position(siblings->x, siblings->y);
@@ -38,8 +51,8 @@ Node* MonteCarloAgent::getBestChild(Node* root) {
          }
          siblings = siblings->sibling;
       }
-      child = child->child;
-   }
+   //    child = child->child;
+   // }
    // while (child) {
    //    Node* siblings = child;
    //    while (siblings) {
@@ -79,11 +92,11 @@ Node* MonteCarloAgent::UCTSelect(Node* node) {
    return res;
 }
 
-int MonteCarloAgent::createChildren(Node* parent, State& state,
+void MonteCarloAgent::createChildren(Node* parent, State& state,
  const boost::optional< std::tuple< Move, State > >& predecessor) {
    Node* last = parent;
-   for (int i = 0; i < BOARD_SIZE; i++) {
-      for (int j = 0; j < BOARD_SIZE; j++) {
+   for (int i = 0; i < BOARD_SIZE; ++i) {
+      for (int j = 0; j < BOARD_SIZE; ++j) {
          Position position(i, j);
          Action action(this->_marker, position);
          if (state.isActionValid(action, predecessor)) {
@@ -98,8 +111,7 @@ int MonteCarloAgent::createChildren(Node* parent, State& state,
          }
       }
    }
-   return 0;
- }
+}
 
 bool MonteCarloAgent::checkGameOver(State& state, Move move,
  const boost::optional< std::tuple< Move, State > >& predecessor) {
@@ -107,7 +119,7 @@ bool MonteCarloAgent::checkGameOver(State& state, Move move,
    Move prevMove = std::get< 0 >(predecessorTuple);
 
    if ((!boost::get<Action>(&move) && !boost::get<Action>(&prevMove)) ||
-       state.getSuccessors(this->_marker, predecessor).empty()) { //Both Action is Pass or If no possible moves left
+       state.getSuccessors(this->_marker, predecessor).empty()) {
       return true;
    }
    else {
@@ -151,10 +163,10 @@ int MonteCarloAgent::playRandomGame(State& state,
    do {
       prevAction = makeRandomMove(tempState, pred);
       cur_player == white ? cur_player = black : cur_player = white;
-      this->_marker == white ? this->_marker = black : this->_marker = white; // switch players
+      this->_marker == white ? this->_marker = black : this->_marker = white;
       pred = std::make_tuple(prevAction, tempState);
-      moveCount++;
-   } while (!checkGameOver(tempState, prevAction, pred) && moveCount < 80); //Allow first move
+      ++moveCount;
+   } while (!checkGameOver(tempState, prevAction, pred) && moveCount < 80);
    if (std::get<0>(tempState.getScores()) > std::get<1>(tempState.getScores())) {
       if (cur_player == white) {
          return cur_player == temp_marker ? 1 : 0;
@@ -173,9 +185,10 @@ int MonteCarloAgent::playRandomGame(State& state,
    }
 }
 
+int randomresult = 0;
 int MonteCarloAgent::playSimulation(Node* n, State& state,
   const boost::optional< std::tuple< base::Move, base::State > >& predecessor) {
-   int randomresult = 0;
+
    if (n->visits == 0) {
       randomresult = playRandomGame(state, predecessor);
    }
@@ -209,7 +222,7 @@ Move MonteCarloAgent::makeMove(State& state,
    predecessorPtr = predecessor;
    temp_marker = this->_marker;
 
-   for (int i = 0; i < numSims; i++) {
+   for (int i = 0; i < numSims; ++i) {
       State clone = State(state);
       cout << "simulation " << i << endl;
       playSimulation(root, clone, predecessor);

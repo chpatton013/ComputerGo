@@ -19,7 +19,7 @@ public:
     const boost::optional< std::tuple< base::Move, base::State > >& predecessor);
    int playRandomGame(base::State& state,
     const boost::optional< std::tuple< base::Move, base::State > >& predecessor);
-   int createChildren(Node* node, base::State& state,
+   void createChildren(Node* node, base::State& state,
     const boost::optional< std::tuple< base::Move, base::State > >& predecessor);
    Node* getBestChild(Node* root);
    Node* UCTSelect(Node* node);
