@@ -179,6 +179,40 @@ TEST_CASE("base/state/capture/black") {
    assertCapture(board, action, expected);
 }
 
+TEST_CASE("base/state/capture/corner") {
+   auto n = none;
+   auto W = white;
+   auto B = black;
+
+   Board board = {{
+      W, B, n, n, n, n, n, n, n,
+      n, W, n, n, n, n, n, n, n,
+      n, n, n, n, n, n, n, n, n,
+      n, n, n, n, n, n, n, n, n,
+      n, n, n, n, n, n, n, n, n,
+      n, n, n, n, n, n, n, n, n,
+      n, n, n, n, n, n, n, n, n,
+      n, n, n, n, n, n, n, n, n,
+      n, n, n, n, n, n, n, n, n,
+   }};
+
+   Action action(black, Position(1, 0));
+
+   Board expected = {{
+      n, B, n, n, n, n, n, n, n,
+      B, W, n, n, n, n, n, n, n,
+      n, n, n, n, n, n, n, n, n,
+      n, n, n, n, n, n, n, n, n,
+      n, n, n, n, n, n, n, n, n,
+      n, n, n, n, n, n, n, n, n,
+      n, n, n, n, n, n, n, n, n,
+      n, n, n, n, n, n, n, n, n,
+      n, n, n, n, n, n, n, n, n,
+   }};
+
+   assertCapture(board, action, expected);
+}
+
 TEST_CASE("base/state/capture/contested") {
    auto n = none;
    auto W = white;
@@ -268,9 +302,9 @@ TEST_CASE("base/state/capture/one-eye") {
 
    Board expected = {{
       n, n, B, n, n, n, n, n, n,
-      n, B, n, B, n, n, n, n, n,
-      B, n, B, n, B, n, n, n, n,
-      n, B, n, B, n, n, n, n, n,
+      n, B, W, B, n, n, n, n, n,
+      B, W, n, W, B, n, n, n, n,
+      n, B, W, B, n, n, n, n, n,
       n, n, B, n, n, n, n, n, n,
       n, n, n, n, n, n, n, n, n,
       n, n, n, n, n, n, n, n, n,
