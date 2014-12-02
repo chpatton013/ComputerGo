@@ -56,6 +56,8 @@ private:
     std::array< bool, BOARD_DIMENSION * BOARD_DIMENSION >& collected);
    static bool isCaptured(const Board& board,
     const std::vector< Position > positionGroup);
+   static void capturePositionGroup(Board& board,
+    const std::vector< Position > positionGroup);
    static std::vector< Position > getSurroundingPositionGroup(const Board& board,
     const std::vector< Position > positionGroup, Marker marker);
 

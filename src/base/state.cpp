@@ -149,10 +149,10 @@ State& State::operator=(const State& rhs) {
 
    // Take the position.
    successorBoard[index] = marker;
-   // Capture enemies.
-   State::capturePosition(successorBoard, opponentMarker, position);
    // Capture self.
    State::capturePosition(successorBoard, marker, position);
+   // Capture enemies.
+   State::capturePosition(successorBoard, opponentMarker, position);
 
    return State(successorBoard);
 }
@@ -351,19 +351,19 @@ std::vector< std::vector< Position > > State::groupTerritory() const {
    State::collectPositions(board, marker, position, collectedPositions,
     collected);
 
+   if (State::isCaptured(board, collectedPositions)) {
+      State::capturePositionGroup(board, collectedPositions);
+   }
+
    auto adjacentPositions = State::getAdjacentPositions(position);
    for (auto adjacentPosition : adjacentPositions) {
+      collectedPositions.clear();
       State::collectPositions(board, marker, adjacentPosition,
        collectedPositions, collected);
-   }
 
-   if (!State::isCaptured(board, collectedPositions)) {
-      return;
-   }
-
-   for (auto collectedPosition : collectedPositions) {
-      int collectedIndex = State::getIndex(collectedPosition);
-      board[collectedIndex] = none;
+      if (State::isCaptured(board, collectedPositions)) {
+         State::capturePositionGroup(board, collectedPositions);
+      }
    }
 }
 
@@ -399,6 +399,13 @@ std::vector< std::vector< Position > > State::groupTerritory() const {
    }
 
    return true;
+}
+
+/* static */ void State::capturePositionGroup(Board& board,
+ const std::vector< Position > positionGroup) {
+   for (auto position : positionGroup) {
+      board[State::getIndex(position)] = none;
+   }
 }
 
 /* static */ std::vector< Position > State::getSurroundingPositionGroup(
