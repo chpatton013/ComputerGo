@@ -121,11 +121,13 @@ bool State::isActionValid(const Action& action,
    State::validatePosition(position);
 
    int index = State::getIndex(position);
-
    if (this->_board[index] != none) {
       return false;
    }
-
+   State clone = State::applyAction(*this, action);
+   if (this->getBoard() == clone.getBoard()) {
+      return false;
+   }
    return true;
 }
 
