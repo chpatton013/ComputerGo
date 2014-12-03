@@ -151,10 +151,10 @@ State& State::operator=(const State& rhs) {
 
    // Take the position.
    successorBoard[index] = marker;
-   // Capture self.
-   State::capturePosition(successorBoard, marker, position);
    // Capture enemies.
    State::capturePosition(successorBoard, opponentMarker, position);
+   // Capture self.
+   State::capturePosition(successorBoard, marker, position);
 
    return State(successorBoard);
 }

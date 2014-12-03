@@ -302,9 +302,9 @@ TEST_CASE("base/state/capture/one-eye") {
 
    Board expected = {{
       n, n, B, n, n, n, n, n, n,
-      n, B, W, B, n, n, n, n, n,
-      B, W, n, W, B, n, n, n, n,
-      n, B, W, B, n, n, n, n, n,
+      n, B, n, B, n, n, n, n, n,
+      B, n, B, n, B, n, n, n, n,
+      n, B, n, B, n, n, n, n, n,
       n, n, B, n, n, n, n, n, n,
       n, n, n, n, n, n, n, n, n,
       n, n, n, n, n, n, n, n, n,
@@ -315,7 +315,7 @@ TEST_CASE("base/state/capture/one-eye") {
    assertCapture(board, action, expected);
 }
 
-TEST_CASE("base/state/capture/two-eyes") {
+TEST_CASE("base/state/capture/unsafe-two-eyes") {
    auto n = none;
    auto W = white;
    auto B = black;
@@ -335,13 +335,61 @@ TEST_CASE("base/state/capture/two-eyes") {
    Action action1(black, Position(2, 2));
    Action action2(black, Position(3, 3));
 
-   Board expected = {{
+   Board expected1 = {{
       n, n, B, n, n, n, n, n, n,
-      n, B, W, B, n, n, n, n, n,
-      B, W, n, W, B, n, n, n, n,
+      n, B, n, B, n, n, n, n, n,
+      B, n, B, W, B, n, n, n, n,
       n, B, W, n, W, B, n, n, n,
       n, n, B, W, B, n, n, n, n,
       n, n, n, B, n, n, n, n, n,
+      n, n, n, n, n, n, n, n, n,
+      n, n, n, n, n, n, n, n, n,
+      n, n, n, n, n, n, n, n, n,
+   }};
+
+   Board expected2 = {{
+      n, n, B, n, n, n, n, n, n,
+      n, B, W, B, n, n, n, n, n,
+      B, W, n, W, B, n, n, n, n,
+      n, B, W, B, n, B, n, n, n,
+      n, n, B, n, B, n, n, n, n,
+      n, n, n, B, n, n, n, n, n,
+      n, n, n, n, n, n, n, n, n,
+      n, n, n, n, n, n, n, n, n,
+      n, n, n, n, n, n, n, n, n,
+   }};
+
+   assertCapture(board, action1, expected1);
+   assertCapture(board, action2, expected2);
+}
+
+TEST_CASE("base/state/capture/safe-two-eyes") {
+   auto n = none;
+   auto W = white;
+   auto B = black;
+
+   Board board = {{
+      n, n, B, B, n, n, n, n, n,
+      n, B, W, W, B, n, n, n, n,
+      B, W, n, W, W, B, n, n, n,
+      B, W, W, n, W, B, n, n, n,
+      n, B, W, W, B, n, n, n, n,
+      n, n, B, B, n, n, n, n, n,
+      n, n, n, n, n, n, n, n, n,
+      n, n, n, n, n, n, n, n, n,
+      n, n, n, n, n, n, n, n, n,
+   }};
+
+   Action action1(black, Position(2, 2));
+   Action action2(black, Position(3, 3));
+
+   Board expected = {{
+      n, n, B, B, n, n, n, n, n,
+      n, B, W, W, B, n, n, n, n,
+      B, W, n, W, W, B, n, n, n,
+      B, W, W, n, W, B, n, n, n,
+      n, B, W, W, B, n, n, n, n,
+      n, n, B, B, n, n, n, n, n,
       n, n, n, n, n, n, n, n, n,
       n, n, n, n, n, n, n, n, n,
       n, n, n, n, n, n, n, n, n,
