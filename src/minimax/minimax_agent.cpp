@@ -197,6 +197,7 @@ int MiniMaxAgent::pseudoControl(const Board& board) const{
    static const int pieceVal = 5; //value for having a piece on a square
    static const int controlVal = 10; //bonus value for having 'control' over a square
    static const int weakVal = 10; //value for having weak presence on a square
+   static const int medVal = 20;
    static const int strongVal = 30; //value for having strong presence on a square
    static const int vStrongVal = 40; //value for having a very strong presence on a square
    std::array<int, BOARD_DIMENSION * BOARD_DIMENSION> wcontrol;
@@ -248,8 +249,11 @@ int MiniMaxAgent::pseudoControl(const Board& board) const{
       for (int y = 0; y < BOARD_DIMENSION; ++y) {
          Marker curr = board[State::getIndex(Position(x, y))];
          int control = 0;
-         if (wcontrol[State::getIndex(Position(x, y))] == 1 || wcontrol[State::getIndex(Position(x, y))] == 5) {
+         if (wcontrol[State::getIndex(Position(x, y))] == 1) {
             control += weakVal;
+         }
+         if (wcontrol[State::getIndex(Position(x, y))] == 5) {
+            control += medVal;
          }
          if (wcontrol[State::getIndex(Position(x, y))] == 2 || wcontrol[State::getIndex(Position(x, y))] == 4) {
             control += strongVal;
@@ -258,8 +262,11 @@ int MiniMaxAgent::pseudoControl(const Board& board) const{
             control += vStrongVal;
          }
          
-         if (bcontrol[State::getIndex(Position(x, y))] == 1 || bcontrol[State::getIndex(Position(x, y))] == 5) {
+         if (bcontrol[State::getIndex(Position(x, y))] == 1) {
             control -= weakVal;
+         }
+         if (wcontrol[State::getIndex(Position(x, y))] == 5) {
+            control -= medVal;
          }
          if (bcontrol[State::getIndex(Position(x, y))] == 2 || bcontrol[State::getIndex(Position(x, y))] == 4) {
             control -= strongVal;
@@ -336,7 +343,7 @@ std::tuple< int, int > MiniMaxAgent::edgeCosts(const Board& board) const {
 
 int MiniMaxAgent::utility(const Move& move, const State& state) const {
    static const int scoreWeight = 1000;
-   static const int edgeWeight = 10;
+   static const int edgeWeight = 100;
    static const int passWeight = 1;
 
    auto control = MiniMaxAgent::pseudoControl(state.getBoard());
