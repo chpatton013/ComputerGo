@@ -361,7 +361,7 @@ int MiniMaxAgent::utility(const Move& move, const State& state) const {
 }
 
 int MiniMaxAgent::getDepth(const base::State& state) const {
-   static const int maxNumCases = 10E4;
+   static const int maxNumCases = 5E5;
 
    // Count open positions.
    int numOpenPositions = 0;
