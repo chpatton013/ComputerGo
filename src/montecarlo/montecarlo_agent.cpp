@@ -30,9 +30,9 @@ Node* MonteCarloAgent::getBestChild(Node* root) {
    while (siblings) {
       Position position(siblings->x, siblings->y);
       Action action(this->_marker, position);
-      if (siblings->visits > best && m_state.isActionValid(action, predecessorPtr)) {
+      if (siblings->wins > best && m_state.isActionValid(action, predecessorPtr)) {
           best_child = siblings;
-          best = siblings->visits;
+          best = siblings->wins;
       }
       siblings = siblings->sibling;
    }
@@ -68,7 +68,7 @@ void MonteCarloAgent::createChildren(Node* parent, State& state,
    for (int i = 0; i < BOARD_DIMENSION; ++i) {
       for (int j = 0; j < BOARD_DIMENSION; ++j) {
          Position position(i, j);
-         Action action(cur_player, position);
+         Action action(this->_marker, position);
          if (state.isActionValid(action, predecessor)) {
             Node* n = new Node(i, j);
             if (last == parent) {
@@ -95,12 +95,11 @@ bool MonteCarloAgent::checkGameOver(State& state, Move move,
 Move MonteCarloAgent::makeRandomMove(State& state,
  const boost::optional< std::tuple< base::Move, base::State > >& predecessor) {
    vector<Successor> successors = state.getSuccessors(cur_player, predecessor);
-   int index = 0;
    if (successors.size() == 1) {
       return Pass();
    }
-   int size = successors.size() - 1;
-   index = rand() % size;
+   int size = successors.size();
+   int index = (rand() % size);
    Move move = get<0>(successors.at(index));
    if (boost::get<Action>(&move)) {
       tempState = State::applyAction(state, boost::get<Action>(move));
@@ -114,14 +113,11 @@ int MonteCarloAgent::playRandomGame(State& state,
    Move prevAction;
    Predecessor pred = predecessor.get();
    tempState = State(state);
-   int moveCount = 0;
    do {
       prevAction = makeRandomMove(tempState, pred); // 0.0001
       cur_player == white ? cur_player = black : cur_player = white;
-      pred = std::make_tuple(prevAction, tempState);
-      ++moveCount;
+      pred = make_tuple(prevAction, tempState);
    } while (!checkGameOver(tempState, prevAction, pred));
-   //cout << moveCount << endl;
    if (get<0>(tempState.getScores()) > get<1>(tempState.getScores())) {
       return this->_marker == white ? 1 : 0;
    }
@@ -133,26 +129,35 @@ int MonteCarloAgent::playRandomGame(State& state,
 int randomresult = 0;
 int MonteCarloAgent::playSimulation(Node* n, State& state,
   const boost::optional< std::tuple< base::Move, base::State > >& predecessor) {
-   if (n->visits == 0) {
-      randomresult = playRandomGame(state, predecessor); // 0.015
+   if (!endGame) {
+      if (n->visits == 0) {
+         randomresult = playRandomGame(state, predecessor); // 0.015
+      }
+      else {
+         if (!n->child) {
+            createChildren(n, state, predecessor);
+         }
+         Node *next = UCTSelect(n);
+
+         if (!next) {
+            endGame = true;
+            return 0;
+         }
+         Position position(next->x, next->y);
+         Action action(cur_player, position);
+         tempState = State::applyAction(state, action);
+         cur_player == white ? cur_player = black : cur_player = white;
+         State clone = State(tempState);
+         Predecessor pred = make_tuple(action, clone);
+         randomresult = playSimulation(next, clone, pred);
+      }
+      n->visits += 1;
+      n->wins += randomresult;
+      return randomresult;
    }
    else {
-      if (!n->child) {
-         createChildren(n, state, predecessor);
-      }
-      Node *next = UCTSelect(n);
-
-      Position position(next->x, next->y);
-      Action action(cur_player, position);
-      tempState = State::applyAction(state, action);
-      cur_player == white ? cur_player = black : cur_player = white;
-      State clone = State(tempState);
-      Predecessor pred = make_tuple(action, clone);
-      randomresult = playSimulation(next, clone, pred);
+      return 0;
    }
-   n->visits += 1;
-   n->wins += randomresult;
-   return randomresult;
 }
 
 bool MonteCarloAgent::makeSmartFirstMove(const State& state) const {
@@ -169,13 +174,26 @@ Move MonteCarloAgent::makeMove(State& state,
          return Action(this->_marker, p1);
       }
    }
+   if (!boost::get<Action>(&(get<0>(predecessor.get())))) {
+      int score = get<0>(state.getScores()) - get<1>(state.getScores());
+      if (score >= 0) {
+         if (this->_marker == white) {
+            return Pass();
+         }
+      }
+      else {
+         if (this->_marker == black) {
+            return Pass();
+         }
+      }
+   }
 
    srand(time(NULL));
    Node *root = new Node(-2, -2);
 
    m_state = state;
    predecessorPtr = predecessor;
-   cur_player = this->_marker;
+   // cur_player = this->_marker;
    createChildren(root, state, predecessor); // 0.000131 seconds
 
    for (int i = 0; i < numSims; ++i) {
@@ -188,7 +206,7 @@ Move MonteCarloAgent::makeMove(State& state,
    Node* n = getBestChild(root); // 0.000024
    Position position(n->x, n->y);
 
-   if (n->getWinRate() == 0) {
+   if (endGame) {
       return Pass();
    }
    return Action(this->_marker, position);

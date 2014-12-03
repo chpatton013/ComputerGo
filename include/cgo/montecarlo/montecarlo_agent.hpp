@@ -12,6 +12,7 @@ class MonteCarloAgent : public base::Agent {
 public:
    MonteCarloAgent(base::Marker marker);
    virtual ~MonteCarloAgent();
+   bool endGame = false;
    bool checkGameOver(base::State& state, base::Move move,
     const boost::optional< std::tuple< base::Move, base::State > >& predecessor);
    base::Move makeRandomMove(base::State& state,
