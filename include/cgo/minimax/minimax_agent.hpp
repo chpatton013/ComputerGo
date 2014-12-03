@@ -21,7 +21,8 @@ private:
    std::tuple< base::Move, int > mmAbMin(base::State& state, 
     const boost::optional< base::Predecessor >& predecessor, int alpha,
     int beta, int depth);
-   int utility(const base::State& state);
+   std::tuple< int, int> edgeCosts(const base::Board& board);
+   int utility(const base::Move& move, const base::State& state);
 
    int _turnNumber;
 };

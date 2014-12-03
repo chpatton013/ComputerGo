@@ -31,6 +31,7 @@ Move MiniMaxAgent::makeMove(State& state,
    ++this->_turnNumber;
 
    auto maxMoveValue = this->mmAbMax(state, predecessor, alpha, beta, depth);
+
    return std::get<0>(maxMoveValue);
 }
 
@@ -38,12 +39,12 @@ std::tuple< Move, int > MiniMaxAgent::mmAbMax(State& state,
  const boost::optional< Predecessor >& predecessor, int alpha, int beta,
  int depth) {
    Move maxMove = Pass();
-   int maxValue = this->utility(state);
+   int maxValue = this->utility(maxMove, state);
 
    if (predecessor) {
       auto predecessorValue = predecessor.get();
       Move predMove = std::get<0>(predecessorValue);
-      Pass* pass = boost::get< Pass >(&predMove);
+      const Pass* pass = boost::get< Pass >(&predMove);
       if ((pass != nullptr) && (maxValue > 0)) {
          return std::make_tuple(Pass(), maxValue);
       }
@@ -51,6 +52,7 @@ std::tuple< Move, int > MiniMaxAgent::mmAbMax(State& state,
 
    std::vector< Successor > successors =
     state.getSuccessors(this->_marker, predecessor);
+
    if (depth == 0) {
       if (successors.size() > 0) {
          Move chosenMove = std::get<0>(successors[0]);
@@ -59,7 +61,7 @@ std::tuple< Move, int > MiniMaxAgent::mmAbMax(State& state,
          for (auto successor : successors) {
             auto succMove = std::get<0>(successor);
             auto succState = std::get<1>(successor);
-            int succScore = this->utility(succState);
+            int succScore = this->utility(succMove, succState);
 
             if (succScore > chosenScore) {
                chosenMove = succMove;
@@ -103,12 +105,12 @@ std::tuple< Move, int > MiniMaxAgent::mmAbMin(State& state,
  const boost::optional< Predecessor >& predecessor, int alpha, int beta,
  int depth) {
    Move minMove = Pass();
-   int minValue = this->utility(state);
+   int minValue = this->utility(minMove, state);
 
    if (predecessor) {
       auto predecessorValue = predecessor.get();
       Move predMove = std::get<0>(predecessorValue);
-      Pass* pass = boost::get< Pass >(&predMove);
+      const Pass* pass = boost::get< Pass >(&predMove);
       if ((pass != nullptr) && (minValue < 0)) {
          return std::make_tuple(Pass(), minValue);
       }
@@ -124,7 +126,7 @@ std::tuple< Move, int > MiniMaxAgent::mmAbMin(State& state,
          for (auto successor : successors) {
             auto succMove = std::get<0>(successor);
             auto succState = std::get<1>(successor);
-            int succScore = this->utility(succState);
+            int succScore = this->utility(succMove, succState);
 
             if (succScore < chosenScore) {
                chosenMove = succMove;
@@ -164,9 +166,66 @@ std::tuple< Move, int > MiniMaxAgent::mmAbMin(State& state,
    return std::make_tuple(minMove, minValue);
 }
 
-int MiniMaxAgent::utility(const State& state) {
-   auto scores = state.getScores();
-   int difference = std::get<0>(scores) - std::get<1>(scores);
+std::tuple< int, int > MiniMaxAgent::edgeCosts(const Board& board) {
+   int whiteCost = 0;
+   int blackCost = 0;
 
-   return (this->_marker == white) ? difference : -difference;
+   for (int ndx = 0; ndx < BOARD_DIMENSION; ++ndx) {
+      Marker rowMarker1 = board[State::getIndex(Position(ndx, 0))];
+      Marker rowMarker2 = board[State::getIndex(Position(ndx, BOARD_DIMENSION - 1))];
+      Marker colMarker1 = board[State::getIndex(Position(0, ndx))];
+      Marker colMarker2 = board[State::getIndex(Position(BOARD_DIMENSION - 1, ndx))];
+
+      if (rowMarker1 == white) {
+         ++whiteCost;
+      }
+      if (rowMarker2 == white) {
+         ++whiteCost;
+      }
+      if (colMarker1 == white) {
+         ++whiteCost;
+      }
+      if (colMarker2 == white) {
+         ++whiteCost;
+      }
+
+      if (rowMarker1 == black) {
+         ++blackCost;
+      }
+      if (rowMarker2 == black) {
+         ++blackCost;
+      }
+      if (colMarker1 == black) {
+         ++blackCost;
+      }
+      if (colMarker2 == black) {
+         ++blackCost;
+      }
+   }
+
+   return std::make_tuple(whiteCost, blackCost);
+}
+
+int MiniMaxAgent::utility(const Move& move, const State& state) {
+   static const int scoreWeight = 1000;
+   static const int edgeWeight = 10;
+   static const int passWeight = 1;
+
+   auto scores = state.getScores();
+   int scoreValue = std::get<0>(scores) - std::get<1>(scores);
+
+   auto edgeCosts = MiniMaxAgent::edgeCosts(state.getBoard());
+   int edgeValue = (this->_marker == white) ? -std::get<0>(edgeCosts) :
+    std::get<1>(edgeCosts);
+
+   int passValue = 0;
+   const Pass* pass = boost::get< Pass >(&move);
+   if (pass != nullptr) {
+      passValue = (this->_marker == white) ? 1 : -1;
+   }
+
+   int totalValue = scoreWeight * scoreValue + edgeWeight * edgeValue +
+    passWeight * passValue;
+
+   return (this->_marker == white) ? totalValue : -totalValue;
 }
