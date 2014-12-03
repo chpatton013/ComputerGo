@@ -96,6 +96,9 @@ std::vector< Successor > State::getSuccessors(Marker marker,
    State::validatePlayerMarker(marker);
 
    std::vector< Successor > successors;
+
+   successors.push_back(std::make_tuple(Pass(), *this));
+
    for (int row = 0; row < BOARD_DIMENSION; ++row) {
       for (int col = 0; col < BOARD_DIMENSION; ++col) {
          Position position(row, col);
@@ -106,8 +109,6 @@ std::vector< Successor > State::getSuccessors(Marker marker,
          }
       }
    }
-
-   successors.push_back(std::make_tuple(Pass(), *this));
 
    return successors;
 }
