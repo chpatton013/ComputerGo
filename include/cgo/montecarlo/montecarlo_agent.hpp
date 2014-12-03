@@ -9,7 +9,6 @@ namespace montecarlo {
 
 
 class MonteCarloAgent : public base::Agent {
-const int BOARD_SIZE = 9;
 public:
    MonteCarloAgent(base::Marker marker);
    virtual ~MonteCarloAgent();
@@ -27,6 +26,8 @@ public:
     const boost::optional< std::tuple< base::Move, base::State > >& predecessor);
    base::Move makeMove(base::State& state,
     const boost::optional< std::tuple< base::Move, base::State > >& predecessor);
+   bool makeSmartFirstMove(const base::State& state) const;
+   int _turnNumber;
 };
 
 
