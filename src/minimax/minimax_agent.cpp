@@ -269,15 +269,18 @@ int MiniMaxAgent::pseudoControl(const Board& board) const{
          }
          if (curr == white ){
             if (control > 0) {
-               control = control * 1.5;
+               //control = control * 1.5;
             }
             control += pieceVal;
          }
          if (curr == black){
             if (control < 0) {
-               control = control * 1.5;
+               //control = control * 1.5;
             }
             control -= pieceVal;
+         }
+         if (bcontrol[State::getIndex(Position(x, y))] > 0 && wcontrol[State::getIndex(Position(x, y))] > 0) {
+            control *= 2;
          }
          if (control > 0) {
             control += controlVal;
@@ -337,7 +340,7 @@ int MiniMaxAgent::utility(const Move& move, const State& state) const {
    static const int passWeight = 1;
 
    auto control = MiniMaxAgent::pseudoControl(state.getBoard());
-   control = (this->_marker == white) ? control : -control;
+   //control = (this->_marker == white) ? control : -control;
    auto scores = state.getScores();
    int scoreValue = std::get<0>(scores) - std::get<1>(scores);
 
