@@ -26,13 +26,13 @@ static const int numSims = 1000;
 Node* MonteCarloAgent::getBestChild(Node* root) {
    Node* siblings = root->child;
    Node* best_child = NULL;
-   double best_win = -1;
+   double best = -1;
    while (siblings) {
       Position position(siblings->x, siblings->y);
       Action action(this->_marker, position);
-      if (siblings->getWinRate() > best_win && m_state.isActionValid(action, predecessorPtr)) {
+      if (siblings->visits > best && m_state.isActionValid(action, predecessorPtr)) {
           best_child = siblings;
-          best_win = siblings->getWinRate();
+          best = siblings->visits;
       }
       siblings = siblings->sibling;
    }
