@@ -195,7 +195,7 @@ bool MiniMaxAgent::checkBounds(int x, int y) const{
 int MiniMaxAgent::pseudoControl(const Board& board) const{
    int totalControl = 0;
    static const int pieceVal = 5; //value for having a piece on a square
-   static const int controlVal = 20; //bonus value for having 'control' over a square
+   static const int controlVal = 10; //bonus value for having 'control' over a square
    static const int weakVal = 10; //value for having weak presence on a square
    static const int strongVal = 30; //value for having strong presence on a square
    static const int vStrongVal = 40; //value for having a very strong presence on a square
@@ -268,9 +268,15 @@ int MiniMaxAgent::pseudoControl(const Board& board) const{
             control -= vStrongVal;
          }
          if (curr == white ){
+            if (control > 0) {
+               control = control * 1.5;
+            }
             control += pieceVal;
          }
          if (curr == black){
+            if (control < 0) {
+               control = control * 1.5;
+            }
             control -= pieceVal;
          }
          if (control > 0) {
