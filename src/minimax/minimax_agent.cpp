@@ -13,46 +13,40 @@ MiniMaxAgent::MiniMaxAgent(Marker marker) :
 
 Move MiniMaxAgent::makeMove(State& state,
  const boost::optional< Predecessor >& predecessor) {
+   // Make an intelligent first move.
    if (this->_turnNumber == 0) {
       ++this->_turnNumber;
-
-      const int crucialPoint = std::ceil(BOARD_DIMENSION / 3.0f) - 1;
-
-      Position p1(crucialPoint, crucialPoint);
-      if (state.getBoard()[State::getIndex(p1)] == none) {
-         return Action(this->_marker, p1);
-      }
-
-      Position p2(crucialPoint, (BOARD_DIMENSION - 1) - crucialPoint);
-      return Action(this->_marker, p2);
-   }
-
-   int alpha = std::numeric_limits<int>::min();
-   int beta = std::numeric_limits<int>::max();
-   int depth;
-
-   if (this->_turnNumber < 5) {
-      depth = 2;
-   } else if (this->_turnNumber < 10) {
-      depth = 3;
-   } else if (this->_turnNumber < 15) {
-      depth = 4;
-   } else if (this->_turnNumber < 20) {
-      depth = 5;
-   } else {
-      depth = 6;
+      return this->makeFirstMove(state);
    }
 
    ++this->_turnNumber;
+   return this->makeMiniMaxMove(state, predecessor);
+}
 
+Action MiniMaxAgent::makeFirstMove(const State& state) const {
+   const int crucialPoint = std::ceil(BOARD_DIMENSION / 3.0f) - 1;
+
+   Position p1(crucialPoint, crucialPoint);
+   if (state.getBoard()[State::getIndex(p1)] == none) {
+      return Action(this->_marker, p1);
+   }
+
+   Position p2(crucialPoint, (BOARD_DIMENSION - 1) - crucialPoint);
+   return Action(this->_marker, p2);
+}
+
+Move MiniMaxAgent::makeMiniMaxMove(State& state,
+ const boost::optional< Predecessor >& predecessor) const {
+   int alpha = std::numeric_limits<int>::min();
+   int beta = std::numeric_limits<int>::max();
+   int depth = this->getDepth(state);
    auto maxMoveValue = this->mmAbMax(state, predecessor, alpha, beta, depth);
-
    return std::get<0>(maxMoveValue);
 }
 
 std::tuple< Move, int > MiniMaxAgent::mmAbMax(State& state, 
  const boost::optional< Predecessor >& predecessor, int alpha, int beta,
- int depth) {
+ int depth) const {
    Move maxMove = Pass();
    int maxValue = this->utility(maxMove, state);
 
@@ -118,7 +112,7 @@ std::tuple< Move, int > MiniMaxAgent::mmAbMax(State& state,
 
 std::tuple< Move, int > MiniMaxAgent::mmAbMin(State& state, 
  const boost::optional< Predecessor >& predecessor, int alpha, int beta,
- int depth) {
+ int depth) const {
    Move minMove = Pass();
    int minValue = this->utility(minMove, state);
 
@@ -181,7 +175,7 @@ std::tuple< Move, int > MiniMaxAgent::mmAbMin(State& state,
    return std::make_tuple(minMove, minValue);
 }
 
-std::tuple< int, int > MiniMaxAgent::edgeCosts(const Board& board) {
+std::tuple< int, int > MiniMaxAgent::edgeCosts(const Board& board) const {
    int whiteCost = 0;
    int blackCost = 0;
 
@@ -221,7 +215,7 @@ std::tuple< int, int > MiniMaxAgent::edgeCosts(const Board& board) {
    return std::make_tuple(whiteCost, blackCost);
 }
 
-int MiniMaxAgent::utility(const Move& move, const State& state) {
+int MiniMaxAgent::utility(const Move& move, const State& state) const {
    static const int scoreWeight = 1000;
    static const int edgeWeight = 10;
    static const int passWeight = 1;
@@ -243,4 +237,30 @@ int MiniMaxAgent::utility(const Move& move, const State& state) {
     passWeight * passValue;
 
    return (this->_marker == white) ? totalValue : -totalValue;
+}
+
+int MiniMaxAgent::getDepth(const base::State& state) const {
+   static const int maxNumCases = 10E4;
+
+   // Count open positions.
+   int numOpenPositions = 0;
+   for (int row = 0; row < BOARD_DIMENSION; ++row) {
+      for (int col = 0; col < BOARD_DIMENSION; ++col) {
+         int index = State::getIndex(Position(row, col));
+         if (state.getBoard()[index] == none) {
+            ++numOpenPositions;
+         }
+      }
+   }
+   // Factorial.
+   int numPossibleCases = 1;
+   for (int ndx = numOpenPositions; ndx > 0; --ndx) {
+      numPossibleCases *= ndx;
+
+      if (numPossibleCases > maxNumCases) {
+         return (numOpenPositions - ndx) + 1;
+      }
+   }
+
+   return numOpenPositions + 1;
 }
