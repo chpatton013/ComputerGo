@@ -276,18 +276,18 @@ int MiniMaxAgent::pseudoControl(const Board& board) const{
          }
          if (curr == white ){
             if (control > 0) {
-               //control = control * 1.5;
+               control = control * 1.2;
             }
             control += pieceVal;
          }
          if (curr == black){
             if (control < 0) {
-               //control = control * 1.5;
+               control = control * 1.2;
             }
             control -= pieceVal;
          }
          if (bcontrol[State::getIndex(Position(x, y))] > 0 && wcontrol[State::getIndex(Position(x, y))] > 0) {
-            control *= 2;
+            control *= 1.5;
          }
          if (control > 0) {
             control += controlVal;
