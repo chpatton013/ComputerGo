@@ -41,12 +41,13 @@ public:
    static void printBoard(const State& state);
    static void printBoard(const Board& board);
 
+   static unsigned int getIndex(const Position& position);
+   static Position getPosition(unsigned int index);
+
 private:
    std::vector< Position > calculateLiberties(Marker marker);
    std::vector< std::vector< Position > > groupTerritory() const;
 
-   static unsigned int getIndex(const Position& position);
-   static Position getPosition(unsigned int index);
    static std::vector< Position > getAdjacentPositions(const Position& position);
    static std::vector< Position > getSurroundingPositions(const Position& position);
    static void capturePosition(Board& board, Marker marker,
