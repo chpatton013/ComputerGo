@@ -4,7 +4,7 @@
 #include <boost/variant.hpp>
 
 #ifndef BOARD_DIMENSION
-#define BOARD_DIMENSION 5
+#define BOARD_DIMENSION 9
 #endif
 
 namespace cgo {

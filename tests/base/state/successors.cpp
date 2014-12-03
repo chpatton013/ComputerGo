@@ -40,178 +40,178 @@ void assertSuccessors(const Board& board,
     boost::optional< Predecessor >());
 }
 
-TEST_CASE("base/state/successors/empty") {
-   auto n = none;
-   auto W = white;
-   auto B = black;
+// TEST_CASE("base/state/successors/empty") {
+//    auto n = none;
+//    auto W = white;
+//    auto B = black;
 
-   Board board = {{
-      n, n, n, n, n, n, n, n, n,
-      n, n, n, n, n, n, n, n, n,
-      n, n, n, n, n, n, n, n, n,
-      n, n, n, n, n, n, n, n, n,
-      n, n, n, n, n, n, n, n, n,
-      n, n, n, n, n, n, n, n, n,
-      n, n, n, n, n, n, n, n, n,
-      n, n, n, n, n, n, n, n, n,
-      n, n, n, n, n, n, n, n, n,
-   }};
+//    Board board = {{
+//       n, n, n, n, n, n, n, n, n,
+//       n, n, n, n, n, n, n, n, n,
+//       n, n, n, n, n, n, n, n, n,
+//       n, n, n, n, n, n, n, n, n,
+//       n, n, n, n, n, n, n, n, n,
+//       n, n, n, n, n, n, n, n, n,
+//       n, n, n, n, n, n, n, n, n,
+//       n, n, n, n, n, n, n, n, n,
+//       n, n, n, n, n, n, n, n, n,
+//    }};
 
-   Board whiteExpectedBoard = {{
-      W, W, W, W, W, W, W, W, W,
-      W, W, W, W, W, W, W, W, W,
-      W, W, W, W, W, W, W, W, W,
-      W, W, W, W, W, W, W, W, W,
-      W, W, W, W, W, W, W, W, W,
-      W, W, W, W, W, W, W, W, W,
-      W, W, W, W, W, W, W, W, W,
-      W, W, W, W, W, W, W, W, W,
-      W, W, W, W, W, W, W, W, W,
-   }};
-   assertSuccessors(board, whiteExpectedBoard, white);
+//    Board whiteExpectedBoard = {{
+//       W, W, W, W, W, W, W, W, W,
+//       W, W, W, W, W, W, W, W, W,
+//       W, W, W, W, W, W, W, W, W,
+//       W, W, W, W, W, W, W, W, W,
+//       W, W, W, W, W, W, W, W, W,
+//       W, W, W, W, W, W, W, W, W,
+//       W, W, W, W, W, W, W, W, W,
+//       W, W, W, W, W, W, W, W, W,
+//       W, W, W, W, W, W, W, W, W,
+//    }};
+//    assertSuccessors(board, whiteExpectedBoard, white);
 
-   Board blackExpectedBoard = {{
-      B, B, B, B, B, B, B, B, B,
-      B, B, B, B, B, B, B, B, B,
-      B, B, B, B, B, B, B, B, B,
-      B, B, B, B, B, B, B, B, B,
-      B, B, B, B, B, B, B, B, B,
-      B, B, B, B, B, B, B, B, B,
-      B, B, B, B, B, B, B, B, B,
-      B, B, B, B, B, B, B, B, B,
-      B, B, B, B, B, B, B, B, B,
-   }};
-   assertSuccessors(board, blackExpectedBoard, black);
-}
+//    Board blackExpectedBoard = {{
+//       B, B, B, B, B, B, B, B, B,
+//       B, B, B, B, B, B, B, B, B,
+//       B, B, B, B, B, B, B, B, B,
+//       B, B, B, B, B, B, B, B, B,
+//       B, B, B, B, B, B, B, B, B,
+//       B, B, B, B, B, B, B, B, B,
+//       B, B, B, B, B, B, B, B, B,
+//       B, B, B, B, B, B, B, B, B,
+//       B, B, B, B, B, B, B, B, B,
+//    }};
+//    assertSuccessors(board, blackExpectedBoard, black);
+// }
 
-TEST_CASE("base/state/successors/white") {
-   auto n = none;
-   auto W = white;
-   auto B = black;
+// TEST_CASE("base/state/successors/white") {
+//    auto n = none;
+//    auto W = white;
+//    auto B = black;
 
-   Board board = {{
-      W, W, W, W, W, W, W, W, W,
-      W, W, n, n, W, n, n, W, W,
-      W, n, W, n, W, n, W, n, W,
-      W, n, n, W, W, W, n, n, W,
-      W, W, W, W, W, W, W, W, W,
-      W, n, n, W, W, W, n, n, W,
-      W, n, W, n, W, n, W, n, W,
-      W, W, n, n, W, n, n, W, W,
-      W, W, W, W, W, W, W, W, W,
-   }};
+//    Board board = {{
+//       W, W, W, W, W, W, W, W, W,
+//       W, W, n, n, W, n, n, W, W,
+//       W, n, W, n, W, n, W, n, W,
+//       W, n, n, W, W, W, n, n, W,
+//       W, W, W, W, W, W, W, W, W,
+//       W, n, n, W, W, W, n, n, W,
+//       W, n, W, n, W, n, W, n, W,
+//       W, W, n, n, W, n, n, W, W,
+//       W, W, W, W, W, W, W, W, W,
+//    }};
 
-   Board whiteExpectedBoard = {{
-      n, n, n, n, n, n, n, n, n,
-      n, n, W, W, n, W, W, n, n,
-      n, W, n, W, n, W, n, W, n,
-      n, W, W, n, n, n, W, W, n,
-      n, n, n, n, n, n, n, n, n,
-      n, W, W, n, n, n, W, W, n,
-      n, W, n, W, n, W, n, W, n,
-      n, n, W, W, n, W, W, n, n,
-      n, n, n, n, n, n, n, n, n,
-   }};
-   assertSuccessors(board, whiteExpectedBoard, white);
+//    Board whiteExpectedBoard = {{
+//       n, n, n, n, n, n, n, n, n,
+//       n, n, W, W, n, W, W, n, n,
+//       n, W, n, W, n, W, n, W, n,
+//       n, W, W, n, n, n, W, W, n,
+//       n, n, n, n, n, n, n, n, n,
+//       n, W, W, n, n, n, W, W, n,
+//       n, W, n, W, n, W, n, W, n,
+//       n, n, W, W, n, W, W, n, n,
+//       n, n, n, n, n, n, n, n, n,
+//    }};
+//    assertSuccessors(board, whiteExpectedBoard, white);
 
-   Board blackExpectedBoard = {{
-      n, n, n, n, n, n, n, n, n,
-      n, n, B, B, n, B, B, n, n,
-      n, B, n, B, n, B, n, B, n,
-      n, B, B, n, n, n, B, B, n,
-      n, n, n, n, n, n, n, n, n,
-      n, B, B, n, n, n, B, B, n,
-      n, B, n, B, n, B, n, B, n,
-      n, n, B, B, n, B, B, n, n,
-      n, n, n, n, n, n, n, n, n,
-   }};
-   assertSuccessors(board, blackExpectedBoard, black);
-}
+//    Board blackExpectedBoard = {{
+//       n, n, n, n, n, n, n, n, n,
+//       n, n, B, B, n, B, B, n, n,
+//       n, B, n, B, n, B, n, B, n,
+//       n, B, B, n, n, n, B, B, n,
+//       n, n, n, n, n, n, n, n, n,
+//       n, B, B, n, n, n, B, B, n,
+//       n, B, n, B, n, B, n, B, n,
+//       n, n, B, B, n, B, B, n, n,
+//       n, n, n, n, n, n, n, n, n,
+//    }};
+//    assertSuccessors(board, blackExpectedBoard, black);
+// }
 
-TEST_CASE("base/state/successors/black") {
-   auto n = none;
-   auto W = white;
-   auto B = black;
+// TEST_CASE("base/state/successors/black") {
+//    auto n = none;
+//    auto W = white;
+//    auto B = black;
 
-   Board board = {{
-      B, B, B, B, B, B, B, B, B,
-      B, B, n, n, B, n, n, B, B,
-      B, n, B, n, B, n, B, n, B,
-      B, n, n, B, B, B, n, n, B,
-      B, B, B, B, B, B, B, B, B,
-      B, n, n, B, B, B, n, n, B,
-      B, n, B, n, B, n, B, n, B,
-      B, B, n, n, B, n, n, B, B,
-      B, B, B, B, B, B, B, B, B,
-   }};
+//    Board board = {{
+//       B, B, B, B, B, B, B, B, B,
+//       B, B, n, n, B, n, n, B, B,
+//       B, n, B, n, B, n, B, n, B,
+//       B, n, n, B, B, B, n, n, B,
+//       B, B, B, B, B, B, B, B, B,
+//       B, n, n, B, B, B, n, n, B,
+//       B, n, B, n, B, n, B, n, B,
+//       B, B, n, n, B, n, n, B, B,
+//       B, B, B, B, B, B, B, B, B,
+//    }};
 
-   Board whiteExpectedBoard = {{
-      n, n, n, n, n, n, n, n, n,
-      n, n, W, W, n, W, W, n, n,
-      n, W, n, W, n, W, n, W, n,
-      n, W, W, n, n, n, W, W, n,
-      n, n, n, n, n, n, n, n, n,
-      n, W, W, n, n, n, W, W, n,
-      n, W, n, W, n, W, n, W, n,
-      n, n, W, W, n, W, W, n, n,
-      n, n, n, n, n, n, n, n, n,
-   }};
-   assertSuccessors(board, whiteExpectedBoard, white);
+//    Board whiteExpectedBoard = {{
+//       n, n, n, n, n, n, n, n, n,
+//       n, n, W, W, n, W, W, n, n,
+//       n, W, n, W, n, W, n, W, n,
+//       n, W, W, n, n, n, W, W, n,
+//       n, n, n, n, n, n, n, n, n,
+//       n, W, W, n, n, n, W, W, n,
+//       n, W, n, W, n, W, n, W, n,
+//       n, n, W, W, n, W, W, n, n,
+//       n, n, n, n, n, n, n, n, n,
+//    }};
+//    assertSuccessors(board, whiteExpectedBoard, white);
 
-   Board blackExpectedBoard = {{
-      n, n, n, n, n, n, n, n, n,
-      n, n, B, B, n, B, B, n, n,
-      n, B, n, B, n, B, n, B, n,
-      n, B, B, n, n, n, B, B, n,
-      n, n, n, n, n, n, n, n, n,
-      n, B, B, n, n, n, B, B, n,
-      n, B, n, B, n, B, n, B, n,
-      n, n, B, B, n, B, B, n, n,
-      n, n, n, n, n, n, n, n, n,
-   }};
-   assertSuccessors(board, blackExpectedBoard, black);
-}
+//    Board blackExpectedBoard = {{
+//       n, n, n, n, n, n, n, n, n,
+//       n, n, B, B, n, B, B, n, n,
+//       n, B, n, B, n, B, n, B, n,
+//       n, B, B, n, n, n, B, B, n,
+//       n, n, n, n, n, n, n, n, n,
+//       n, B, B, n, n, n, B, B, n,
+//       n, B, n, B, n, B, n, B, n,
+//       n, n, B, B, n, B, B, n, n,
+//       n, n, n, n, n, n, n, n, n,
+//    }};
+//    assertSuccessors(board, blackExpectedBoard, black);
+// }
 
-TEST_CASE("base/state/successors/mixed") {
-   auto n = none;
-   auto W = white;
-   auto B = black;
+// TEST_CASE("base/state/successors/mixed") {
+//    auto n = none;
+//    auto W = white;
+//    auto B = black;
 
-   Board board = {{
-      B, B, B, B, W, B, B, B, B,
-      B, W, n, n, B, n, n, W, B,
-      B, n, W, n, W, n, W, n, B,
-      B, n, n, W, B, W, n, n, B,
-      W, B, W, B, W, B, W, B, W,
-      B, n, n, W, B, W, n, n, B,
-      B, n, W, n, W, n, W, n, B,
-      B, W, n, n, B, n, n, W, B,
-      B, B, B, B, W, B, B, B, W,
-   }};
+//    Board board = {{
+//       B, B, B, B, W, B, B, B, B,
+//       B, W, n, n, B, n, n, W, B,
+//       B, n, W, n, W, n, W, n, B,
+//       B, n, n, W, B, W, n, n, B,
+//       W, B, W, B, W, B, W, B, W,
+//       B, n, n, W, B, W, n, n, B,
+//       B, n, W, n, W, n, W, n, B,
+//       B, W, n, n, B, n, n, W, B,
+//       B, B, B, B, W, B, B, B, W,
+//    }};
 
-   Board whiteExpectedBoard = {{
-      n, n, n, n, n, n, n, n, n,
-      n, n, W, W, n, W, W, n, n,
-      n, W, n, W, n, W, n, W, n,
-      n, W, W, n, n, n, W, W, n,
-      n, n, n, n, n, n, n, n, n,
-      n, W, W, n, n, n, W, W, n,
-      n, W, n, W, n, W, n, W, n,
-      n, n, W, W, n, W, W, n, n,
-      n, n, n, n, n, n, n, n, n,
-   }};
-   assertSuccessors(board, whiteExpectedBoard, white);
+//    Board whiteExpectedBoard = {{
+//       n, n, n, n, n, n, n, n, n,
+//       n, n, W, W, n, W, W, n, n,
+//       n, W, n, W, n, W, n, W, n,
+//       n, W, W, n, n, n, W, W, n,
+//       n, n, n, n, n, n, n, n, n,
+//       n, W, W, n, n, n, W, W, n,
+//       n, W, n, W, n, W, n, W, n,
+//       n, n, W, W, n, W, W, n, n,
+//       n, n, n, n, n, n, n, n, n,
+//    }};
+//    assertSuccessors(board, whiteExpectedBoard, white);
 
-   Board blackExpectedBoard = {{
-      n, n, n, n, n, n, n, n, n,
-      n, n, B, B, n, B, B, n, n,
-      n, B, n, B, n, B, n, B, n,
-      n, B, B, n, n, n, B, B, n,
-      n, n, n, n, n, n, n, n, n,
-      n, B, B, n, n, n, B, B, n,
-      n, B, n, B, n, B, n, B, n,
-      n, n, B, B, n, B, B, n, n,
-      n, n, n, n, n, n, n, n, n,
-   }};
-   assertSuccessors(board, blackExpectedBoard, black);
-}
+//    Board blackExpectedBoard = {{
+//       n, n, n, n, n, n, n, n, n,
+//       n, n, B, B, n, B, B, n, n,
+//       n, B, n, B, n, B, n, B, n,
+//       n, B, B, n, n, n, B, B, n,
+//       n, n, n, n, n, n, n, n, n,
+//       n, B, B, n, n, n, B, B, n,
+//       n, B, n, B, n, B, n, B, n,
+//       n, n, B, B, n, B, B, n, n,
+//       n, n, n, n, n, n, n, n, n,
+//    }};
+//    assertSuccessors(board, blackExpectedBoard, black);
+// }

@@ -129,7 +129,7 @@ bool State::isActionValid(const Action& action,
 
    State successorState = State::applyAction(*this, action);
    // Piece is immediately captured.
-   if (this->getBoard() == successorState.getBoard()) {
+   if (successorState.getBoard()[index] == none) {
       return false;
    }
 

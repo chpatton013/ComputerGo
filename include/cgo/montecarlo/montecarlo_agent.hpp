@@ -12,7 +12,6 @@ class MonteCarloAgent : public base::Agent {
 public:
    MonteCarloAgent(base::Marker marker);
    virtual ~MonteCarloAgent();
-   bool endGame = false;
    bool checkGameOver(base::State& state, base::Move move,
     const boost::optional< std::tuple< base::Move, base::State > >& predecessor);
    base::Move makeRandomMove(base::State& state,
@@ -21,13 +20,12 @@ public:
     const boost::optional< std::tuple< base::Move, base::State > >& predecessor);
    void createChildren(Node* node, base::State& state,
     const boost::optional< std::tuple< base::Move, base::State > >& predecessor);
-   Node* getBestChild(Node* root);
+   Node* getBestChild();
    Node* UCTSelect(Node* node);
    int playSimulation(Node* node, base::State& state,
     const boost::optional< std::tuple< base::Move, base::State > >& predecessor);
    base::Move makeMove(base::State& state,
     const boost::optional< std::tuple< base::Move, base::State > >& predecessor);
-   bool makeSmartFirstMove(const base::State& state) const;
    int _turnNumber;
 };
 
