@@ -15,6 +15,7 @@ protected:
    std::array< base::Agent*, 2 > getPlayerAgents() const;
    void announceTurnStart() const;
    void announceTurnEnd() const;
+   void announceMove(const base::Move& move) const;
    void announceGameEnd() const;
 };
 

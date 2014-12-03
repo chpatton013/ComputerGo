@@ -62,6 +62,9 @@ private:
    static std::vector< Position > getSurroundingPositionGroup(const Board& board,
     const std::vector< Position > positionGroup, Marker marker);
 
+   static void printHeader();
+   static void printBreak();
+
    Board _board;
    boost::optional< std::vector< Position > > _liberties[2];
 };

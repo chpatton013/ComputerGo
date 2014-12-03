@@ -5,6 +5,7 @@
 #include <cgo/driver/shell_driver.hpp>
 
 using namespace cgo;
+using namespace cgo::base;
 using namespace cgo::driver;
 
 ShellDriver::ShellDriver() :
@@ -14,7 +15,7 @@ ShellDriver::ShellDriver() :
 /* virtual */ ShellDriver::~ShellDriver() {
 }
 
-std::array< base::Agent*, 2 > ShellDriver::getPlayerAgents() const {
+std::array< Agent*, 2 > ShellDriver::getPlayerAgents() const {
    int whiteChoice = -1;
    int blackChoice = -1;
 
@@ -40,10 +41,10 @@ std::array< base::Agent*, 2 > ShellDriver::getPlayerAgents() const {
 
    std::cout << std::endl;
 
-   base::Agent* whiteAgent = this->choiceToAgent(whiteChoice - 1,
-    base::Marker::white);
-   base::Agent* blackAgent = this->choiceToAgent(blackChoice - 1,
-    base::Marker::black);
+   Agent* whiteAgent = this->choiceToAgent(whiteChoice - 1,
+    Marker::white);
+   Agent* blackAgent = this->choiceToAgent(blackChoice - 1,
+    Marker::black);
    return {{ whiteAgent, blackAgent }};
 }
 
@@ -52,11 +53,24 @@ void ShellDriver::announceTurnStart() const {
    int playerIndex = this->_turn % 2 + 1;
 
    std::cout << "Turn " << globalTurn << ", Player " << playerIndex << std::endl;
-   base::State::printBoard(this->_state);
+   State::printBoard(this->_state);
 }
 
 void ShellDriver::announceTurnEnd() const {
    std::cout << std::endl;
+}
+
+void ShellDriver::announceMove(const Move& move) const {
+   std::cout << "Move: ";
+
+   const Pass* pass = boost::get< Pass >(&move);
+   if (pass == nullptr) {
+      Action action = boost::get< Action >(move);
+      Position position = action.position;
+      std::cout << (position.row + 1) << ", " << (position.col + 1) << std::endl;
+   } else {
+      std::cout << "pass" << std::endl;
+   }
 }
 
 void ShellDriver::announceGameEnd() const {

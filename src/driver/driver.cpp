@@ -42,6 +42,8 @@ void Driver::play() {
 
       predecessors[playerIndex] = std::make_tuple(move, this->_state);
 
+      this->announceMove(move);
+
       ++this->_turn;
 
       this->announceTurnEnd();

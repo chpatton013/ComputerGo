@@ -20,6 +20,7 @@ protected:
    virtual std::array< base::Agent*, 2 > getPlayerAgents() const = 0;
    virtual void announceTurnStart() const = 0;
    virtual void announceTurnEnd() const = 0;
+   virtual void announceMove(const base::Move& move) const = 0;
    virtual void announceGameEnd() const = 0;
 
    base::State _state;

@@ -184,9 +184,9 @@ State& State::operator=(const State& rhs) {
 }
 
 /* static */ void State::printBoard(const Board& board) {
-   std::cout << "+---+-------------------+" << std::endl;
-   std::cout << "|   | 1 2 3 4 5 6 7 8 9 |" << std::endl;
-   std::cout << "+---+-------------------+" << std::endl;
+   State::printBreak();
+   State::printHeader();
+   State::printBreak();
 
    for (int row = 0; row < BOARD_DIMENSION; ++row) {
       std::cout << "| " << (row + 1) << " | ";
@@ -210,7 +210,7 @@ State& State::operator=(const State& rhs) {
       std::cout << "|" << std::endl;
    }
 
-   std::cout << "+---+-------------------+" << std::endl;
+   State::printBreak();
 }
 
 std::vector< Position > State::calculateLiberties(Marker marker) {
@@ -426,6 +426,22 @@ std::vector< std::vector< Position > > State::groupTerritory() const {
    }
 
    return surrounding;
+}
+
+/* static */ void State::printHeader() {
+   std::cout << "|   |";
+   for (int ndx = 0; ndx < BOARD_DIMENSION; ++ndx) {
+      std::cout << " " << (ndx + 1);
+   }
+   std::cout << " |" << std::endl;
+}
+
+/* static */ void State::printBreak() {
+   std::cout << "+---+";
+   for (int ndx = 0; ndx < BOARD_DIMENSION; ++ndx) {
+      std::cout << "--";
+   }
+   std::cout << "-+" << std::endl;
 }
 
 /* static */ State::InvalidMarker State::_invalidMarker;
