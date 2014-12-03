@@ -120,14 +120,28 @@ bool State::isActionValid(const Action& action,
    Position position = action.position;
    State::validatePosition(position);
 
+   // Position is already taken.
    int index = State::getIndex(position);
    if (this->_board[index] != none) {
       return false;
    }
-   State clone = State::applyAction(*this, action);
-   if (this->getBoard() == clone.getBoard()) {
+
+   State successorState = State::applyAction(*this, action);
+   // Piece is immediately captured.
+   if (this->getBoard() == successorState.getBoard()) {
       return false;
    }
+
+   if (predecessor) {
+      Predecessor pred = predecessor.get();
+      State predecessorState = std::get<1>(pred);
+
+      // Repeated move.
+      if (predecessorState.getBoard() == successorState.getBoard()) {
+         return false;
+      }
+   }
+
    return true;
 }
 

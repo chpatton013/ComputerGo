@@ -8,6 +8,7 @@
 #include <cgo/minimax/minimax_agent.hpp>
 
 using namespace cgo;
+using namespace cgo::base;
 using namespace cgo::driver;
 
 Driver::Driver() :
@@ -18,31 +19,32 @@ Driver::Driver() :
 }
 
 void Driver::play() {
-   std::array< base::Agent*, 2 > agents = this->getPlayerAgents();
-   std::array< boost::optional< base::Predecessor >, 2 > predecessors;
+   std::array< Agent*, 2 > agents = this->getPlayerAgents();
+   std::array< boost::optional< Predecessor >, 2 > predecessors;
    std::array< bool, 2 > passes;
+
+   predecessors.fill(boost::none);
    passes.fill(false);
 
    do {
-      int playerIndex = (this->_turn % 2);
+      int playerIndex = this->_turn % 2;
       int opponentIndex = (this->_turn + 1) % 2;
 
       this->announceTurnStart();
 
-      auto predecessor = predecessors[opponentIndex];
-      auto move = agents[playerIndex]->makeMove(this->_state, predecessor);
+      auto move = agents[playerIndex]->makeMove(this->_state,
+       predecessors[opponentIndex]);
+      predecessors[playerIndex] = std::make_tuple(move, this->_state);
 
-      base::Action* action = boost::get< base::Action >(&move);
+      this->announceMove(move);
+
+      Action* action = boost::get< Action >(&move);
       if (action != nullptr) {
-         this->_state = base::State::applyAction(this->_state, *action);
+         this->_state = State::applyAction(this->_state, *action);
          passes[playerIndex] = false;
       } else {
          passes[playerIndex] = true;
       }
-
-      predecessors[playerIndex] = std::make_tuple(move, this->_state);
-
-      this->announceMove(move);
 
       ++this->_turn;
 
@@ -52,7 +54,7 @@ void Driver::play() {
    this->announceGameEnd();
 }
 
-base::Agent* Driver::choiceToAgent(int choice, base::Marker marker) const {
+Agent* Driver::choiceToAgent(int choice, Marker marker) const {
    switch (choice) {
    case 0:
       return new standardin::StdinAgent(marker);
