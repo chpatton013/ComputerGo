@@ -175,6 +175,116 @@ std::tuple< Move, int > MiniMaxAgent::mmAbMin(State& state,
    return std::make_tuple(minMove, minValue);
 }
 
+
+bool MiniMaxAgent::checkBounds(int x, int y) const{
+   if (x < 0) {
+      return false;
+   }
+   if (x >= BOARD_DIMENSION) {
+      return false;
+   }
+   if (y < 0) {
+      return false;
+   }
+   if (y >= BOARD_DIMENSION) {
+      return false;
+   }
+   return true;
+}
+
+int MiniMaxAgent::pseudoControl(const Board& board) const{
+   int totalControl = 0;
+   static const int pieceVal = 5; //value for having a piece on a square
+   static const int controlVal = 20; //bonus value for having 'control' over a square
+   static const int weakVal = 10; //value for having weak presence on a square
+   static const int strongVal = 30; //value for having strong presence on a square
+   static const int vStrongVal = 40; //value for having a very strong presence on a square
+   std::array<int, BOARD_DIMENSION * BOARD_DIMENSION> wcontrol;
+   std::array<int, BOARD_DIMENSION * BOARD_DIMENSION> bcontrol;
+   wcontrol.fill(0);
+   bcontrol.fill(0);
+   for (int x = 0; x < BOARD_DIMENSION; ++x) {
+      for (int y = 0; y < BOARD_DIMENSION; ++y) {
+         Marker curr = board[State::getIndex(Position(x, y))];
+         if (curr == white) {
+            if (checkBounds(x, y)) {
+               wcontrol[State::getIndex(Position(x, y))]++;
+            }
+            if (checkBounds(x, y + 1)) {
+               wcontrol[State::getIndex(Position(x, y + 1))]++;
+            }
+            if (checkBounds(x, y - 1)) {
+               wcontrol[State::getIndex(Position(x, y - 1))]++;
+            }
+            if (checkBounds(x + 1, y)) {
+               wcontrol[State::getIndex(Position(x + 1, y))]++;
+            }
+            if (checkBounds(x - 1, y)) {
+               wcontrol[State::getIndex(Position(x - 1, y))]++;
+            }
+         }
+         
+         if (curr == black) {
+            if (checkBounds(x, y)) {
+               bcontrol[State::getIndex(Position(x, y))]++;
+            }
+            if (checkBounds(x, y + 1)) {
+               bcontrol[State::getIndex(Position(x, y + 1))]++;
+            }
+            if (checkBounds(x, y - 1)) {
+               bcontrol[State::getIndex(Position(x, y - 1))]++;
+            }
+            if (checkBounds(x + 1, y)) {
+               bcontrol[State::getIndex(Position(x + 1, y))]++;
+            }
+            if (checkBounds(x - 1, y)) {
+               bcontrol[State::getIndex(Position(x - 1, y))]++;
+            }
+         }
+      }
+   }
+   
+   for (int x = 0; x < BOARD_DIMENSION; ++x) {
+      for (int y = 0; y < BOARD_DIMENSION; ++y) {
+         Marker curr = board[State::getIndex(Position(x, y))];
+         int control = 0;
+         if (wcontrol[State::getIndex(Position(x, y))] == 1 || wcontrol[State::getIndex(Position(x, y))] == 5) {
+            control += weakVal;
+         }
+         if (wcontrol[State::getIndex(Position(x, y))] == 2 || wcontrol[State::getIndex(Position(x, y))] == 4) {
+            control += strongVal;
+         }
+         if (wcontrol[State::getIndex(Position(x, y))] == 3) {
+            control += vStrongVal;
+         }
+         
+         if (bcontrol[State::getIndex(Position(x, y))] == 1 || bcontrol[State::getIndex(Position(x, y))] == 5) {
+            control -= weakVal;
+         }
+         if (bcontrol[State::getIndex(Position(x, y))] == 2 || bcontrol[State::getIndex(Position(x, y))] == 4) {
+            control -= strongVal;
+         }
+         if (bcontrol[State::getIndex(Position(x, y))] == 3) {
+            control -= vStrongVal;
+         }
+         if (curr == white ){
+            control += pieceVal;
+         }
+         if (curr == black){
+            control -= pieceVal;
+         }
+         if (control > 0) {
+            control += controlVal;
+         }
+         if (control < 0) {
+            control -= controlVal;
+         }
+         totalControl += control;
+      }
+   }
+   return totalControl;
+}
+
 std::tuple< int, int > MiniMaxAgent::edgeCosts(const Board& board) const {
    int whiteCost = 0;
    int blackCost = 0;
@@ -220,6 +330,8 @@ int MiniMaxAgent::utility(const Move& move, const State& state) const {
    static const int edgeWeight = 10;
    static const int passWeight = 1;
 
+   auto control = MiniMaxAgent::pseudoControl(state.getBoard());
+   control = (this->_marker == white) ? control : -control;
    auto scores = state.getScores();
    int scoreValue = std::get<0>(scores) - std::get<1>(scores);
 
@@ -234,7 +346,7 @@ int MiniMaxAgent::utility(const Move& move, const State& state) const {
    }
 
    int totalValue = scoreWeight * scoreValue + edgeWeight * edgeValue +
-    passWeight * passValue;
+    passWeight * passValue + control;
 
    return (this->_marker == white) ? totalValue : -totalValue;
 }

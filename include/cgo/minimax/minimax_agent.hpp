@@ -27,6 +27,8 @@ private:
     int beta, int depth) const;
 
    std::tuple< int, int> edgeCosts(const base::Board& board) const;
+   bool checkBounds(int x, int y) const;
+   int pseudoControl(const base::Board& board) const;
    int utility(const base::Move& move, const base::State& state) const;
 
    int getDepth(const base::State& state) const;
