@@ -1,4 +1,5 @@
 #include <limits>
+#include <cmath>
 #include <cgo/minimax/minimax_agent.hpp>
 
 using namespace cgo::base;
@@ -12,6 +13,20 @@ MiniMaxAgent::MiniMaxAgent(Marker marker) :
 
 Move MiniMaxAgent::makeMove(State& state,
  const boost::optional< Predecessor >& predecessor) {
+   if (this->_turnNumber == 0) {
+      ++this->_turnNumber;
+
+      const int crucialPoint = std::ceil(BOARD_DIMENSION / 3.0f) - 1;
+
+      Position p1(crucialPoint, crucialPoint);
+      if (state.getBoard()[State::getIndex(p1)] == none) {
+         return Action(this->_marker, p1);
+      }
+
+      Position p2(crucialPoint, (BOARD_DIMENSION - 1) - crucialPoint);
+      return Action(this->_marker, p2);
+   }
+
    int alpha = std::numeric_limits<int>::min();
    int beta = std::numeric_limits<int>::max();
    int depth;
