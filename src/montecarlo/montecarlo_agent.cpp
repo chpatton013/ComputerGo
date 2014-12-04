@@ -20,7 +20,7 @@ boost::optional<tuple<Move, State>> predecessorPtr;
 State m_state;
 State tempState;
 static const double UCTK = 1;
-static const int numSims = 10000;
+static const int numSims = 1000;
 Node* root = new Node(-1, -1);
 
 Node* MonteCarloAgent::getBestChild() {
@@ -95,26 +95,26 @@ bool MonteCarloAgent::checkGameOver(State& state, Move move,
    const Predecessor& predecessorTuple = predecessor.get();
    Move prevMove = get<0>(predecessorTuple);
 
-   return (!boost::get<Action>(&move) && !boost::get<Action>(&prevMove)) ||
-      state.getSuccessors(cur_player, predecessor).size() == 1;
+   return (!boost::get<Action>(&move) && !boost::get<Action>(&prevMove))
+      || state.getSuccessors(cur_player, predecessor).size() == 1;
 }
 
 Move MonteCarloAgent::makeRandomMove(State& state,
  const boost::optional< std::tuple< base::Move, base::State > >& predecessor) {
    vector<Successor> successors = state.getSuccessors(cur_player, predecessor);
    int size = successors.size();
-   // while (size != 1) {
+   while (size > 3) {
       int index = (rand() % size);
       Move move = get<0>(successors.at(index));
       if (boost::get<Action>(&move)) {
          tempState = State::applyAction(state, boost::get<Action>(move));
          return move;
       }
-      else {
-         return Pass();
-      }
-   // }
-   // return Pass();
+      // else {
+      //    return Pass();
+      // }
+   }
+   return Pass();
 }
 
 int MonteCarloAgent::playRandomGame(State& state,
@@ -128,11 +128,15 @@ int MonteCarloAgent::playRandomGame(State& state,
       cur_player == white ? cur_player = black : cur_player = white;
       pred = make_tuple(prevAction, clone);
    } while (!checkGameOver(tempState, prevAction, pred));
-   if (get<0>(tempState.getScores()) > get<1>(tempState.getScores())) {
+   int score = get<0>(tempState.getScores()) - get<1>(tempState.getScores());
+   if (score > 0) {
       return this->_marker == white ? 1 : 0;
    }
-   else {
+   else if (score < 0) {
       return this->_marker == black ? 1 : 0;
+   }
+   else {
+      return 0;
    }
 }
 
@@ -156,7 +160,7 @@ int MonteCarloAgent::playSimulation(Node* n, State& state,
       if (next->x == -2 && next->y == -2) {
          cur_player == white ? cur_player = black : cur_player = white;
          Predecessor pred = make_tuple(Pass(), state);
-         randomresult = playSimulation(next, tempState, pred);
+         randomresult = playSimulation(next, state, pred);
       }
       else {
          Position position(next->x, next->y);
